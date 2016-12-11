@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "start": "webpack --config webpack.config.js -w"
+  },
+  "dependencies": {
+    "date-fns": "^1.17.0",
+    "diffhtml": "^0.9.2"
+  },
+  "devDependencies": {
+    "webpack": "beta"
+  }
+}
