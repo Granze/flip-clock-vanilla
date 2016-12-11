@@ -46,6 +46,10 @@ export default class FlipClock extends HTMLElement {
     if (this.startFrom) {
       this.time = '00' + ('00' + this.startFrom).slice(-2) + '00';
     }
+
+    if(!this.showButtons) {
+      this.querySelector('.buttons').setAttribute('hidden', '');
+    }
   }
 
   disconnectedCallback() {
