@@ -1,12 +1,19 @@
 {
+  "name": "flip-clock-vanilla",
+  "version": "1.0.0",
+  "description": "A flip clock, timer and countdown made with vanilla web components",
+  "main": "index.js",
+  "repository": "git@github.com:Granze/flip-clock-vanilla.git",
+  "author": "Maurizio Mangione <granzebru@gmail.com>",
   "scripts": {
     "start": "webpack --config webpack.config.js -w"
   },
   "dependencies": {
     "date-fns": "^1.17.0",
-    "diffhtml": "^0.9.2"
+    "hyperhtml": "^0.9.1"
   },
   "devDependencies": {
-    "webpack": "beta"
-  }
+    "webpack": "^2.3.3"
+  },
+  "license": "MIT"
 }
