@@ -2047,10 +2047,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 class FlipClock extends HTMLElement {
   constructor() {
     super();
+    this.attachShadow({ mode: "open" });
     this.time = "000000";
     this.timer = null;
     this.isRunning = false;
-    this.container = __WEBPACK_IMPORTED_MODULE_4_hyperhtml___default.a.bind(this);
+    this.container = __WEBPACK_IMPORTED_MODULE_4_hyperhtml___default.a.bind(this.shadowRoot);
     this.startCount = this.startCount.bind(this);
     this.stopCount = this.stopCount.bind(this);
     this.resetCount = this.resetCount.bind(this);
@@ -2064,15 +2065,15 @@ class FlipClock extends HTMLElement {
     this.displayMode = this.getAttribute("display-mode") || null;
     this.startFrom = this.getAttribute("start-from") || null;
     this.render();
-    this.querySelector(".start-count").addEventListener(
+    this.shadowRoot.querySelector(".start-count").addEventListener(
       "click",
       this.startCount
     );
-    this.querySelector(".stop-count").addEventListener(
+    this.shadowRoot.querySelector(".stop-count").addEventListener(
       "click",
       this.stopCount
     );
-    this.querySelector(".reset-count").addEventListener(
+    this.shadowRoot.querySelector(".reset-count").addEventListener(
       "click",
       this.resetCount
     );
@@ -2088,26 +2089,26 @@ class FlipClock extends HTMLElement {
       this.time = "00" + ("00" + this.startFrom).slice(-2) + "00";
     }
     if (!this.showButtons) {
-      this.querySelector(".buttons").setAttribute("hidden", "");
+      this.shadowRoot.querySelector(".buttons").setAttribute("hidden", "");
     }
     if (this.hideHours) {
-      this.querySelector(".hours").setAttribute("hidden", "");
+      this.shadowRoot.querySelector(".hours").setAttribute("hidden", "");
     }
     if (this.hideSeconds) {
-      this.querySelector(".seconds").setAttribute("hidden", "");
+      this.shadowRoot.querySelector(".seconds").setAttribute("hidden", "");
     }
   }
 
   disconnectedCallback() {
-    this.querySelector(".start-count").removeEventListener(
+    this.shadowRoot.querySelector(".start-count").removeEventListener(
       "click",
       this.startCount
     );
-    this.querySelector(".stop-count").removeEventListener(
+    this.shadowRoot.querySelector(".stop-count").removeEventListener(
       "click",
       this.stopCount
     );
-    this.querySelector(".reset-count").removeEventListener(
+    this.shadowRoot.querySelector(".reset-count").removeEventListener(
       "click",
       this.resetCount
     );
@@ -2160,6 +2161,7 @@ class FlipClock extends HTMLElement {
 
   render() {
     this.container`
+      <link rel="stylesheet" href="./src/flip-clock.css">
       <div id="clock">
         <span class="group hours">
           <span class="num" id="hours0">${this.time[0]}</span>
