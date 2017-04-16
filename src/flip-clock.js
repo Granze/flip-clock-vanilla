@@ -47,15 +47,6 @@ class FlipClock extends HTMLElement {
     if (this.startFrom) {
       this.time = "00" + ("00" + this.startFrom).slice(-2) + "00";
     }
-    if (!this.showButtons) {
-      this.shadowRoot.querySelector(".buttons").setAttribute("hidden", "");
-    }
-    if (this.hideHours) {
-      this.shadowRoot.querySelector(".hours").setAttribute("hidden", "");
-    }
-    if (this.hideSeconds) {
-      this.shadowRoot.querySelector(".seconds").setAttribute("hidden", "");
-    }
   }
 
   disconnectedCallback() {
@@ -120,20 +111,20 @@ class FlipClock extends HTMLElement {
     this.container`
       <link rel="stylesheet" href="./src/flip-clock.css">
       <div id="clock">
-        <span class="group hours">
+        <span class="group hours" hidden="${this.hideHours}">
           <span class="num" id="hours0">${this.time[0]}</span>
           <span class="num" id="hours1">${this.time[1]}</span>
           <b>:</b>
         </span>
         <span class="num" id="minutes0">${this.time[2]}</span>
         <span class="num" id="minutes1">${this.time[3]}</span>
-        <span class="group seconds">
+        <span class="group seconds" hidden="${this.hideSeconds}">
           <b>:</b>
           <span class="num" id="seconds0">${this.time[4]}</span>
           <span class="num" id="seconds1">${this.time[5]}</span>
         </span>
       </div>
-      <div class="buttons">
+      <div class="buttons" hidden="${!this.showButtons}">
         <button class="toggle btn start-count" disabled="${this.isRunning}">Start</button>
         <button class="toggle btn stop-count">Stop</button>
         <button class="reset btn reset-count">Reset</button>
