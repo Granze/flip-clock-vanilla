@@ -14,29 +14,12 @@ class FlipClock extends HTMLElement {
     this.hideHours = false;
     this.hideSeconds = false;
     this.isRunning = false;
-    this.startFrom = null;
-    this.auto = false;
     this.container = hyperHTML.bind(this);
-  }
-
-  static get observedAttributes() {
-    return [
-      "display-mode",
-      "show-buttons",
-      "auto",
-      "hide-hours",
-      "hide-seconds",
-      "start-from"
-    ];
-  }
-
-  attributeChangedCallback(attrName, oldVal, newVal) {
-    if (this[attrName] !== newVal) {
-    }
   }
 
   connectedCallback() {
     this.showButtons = this.hasAttribute("show-buttons");
+    this.auto = this.hasAttribute("auto");
     this.displayMode = this.getAttribute("display-mode") || null;
     this.startFrom = this.getAttribute("start-from") || null;
     this.render();
@@ -64,7 +47,7 @@ class FlipClock extends HTMLElement {
       this.time = "00" + ("00" + this.startFrom).slice(-2) + "00";
     }
     if (!this.showButtons) {
-      this.querySelector('.buttons').setAttribute('hidden', '');
+      this.querySelector(".buttons").setAttribute("hidden", "");
     }
   }
 
