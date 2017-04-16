@@ -1,5 +1,7 @@
+const path = require('path');
+
 module.exports = {
-  entry: './src/flip-clock.js',
+  entry: path.join(__dirname, 'src', 'flip-clock.js'),
   output: {
     filename: 'bundle.js'
   }
