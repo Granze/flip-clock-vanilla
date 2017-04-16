@@ -11,14 +11,14 @@ class FlipClock extends HTMLElement {
     super();
     this.time = "000000";
     this.timer = null;
-    this.hideHours = false;
-    this.hideSeconds = false;
     this.isRunning = false;
     this.container = hyperHTML.bind(this);
   }
 
   connectedCallback() {
     this.showButtons = this.hasAttribute("show-buttons");
+    this.hideHours = this.hasAttribute("hide-hours");
+    this.hideSeconds = this.hasAttribute("hide-seconds");
     this.auto = this.hasAttribute("auto");
     this.displayMode = this.getAttribute("display-mode") || null;
     this.startFrom = this.getAttribute("start-from") || null;
@@ -48,6 +48,12 @@ class FlipClock extends HTMLElement {
     }
     if (!this.showButtons) {
       this.querySelector(".buttons").setAttribute("hidden", "");
+    }
+    if (this.hideHours) {
+      this.querySelector(".hours").setAttribute("hidden", "");
+    }
+    if (this.hideSeconds) {
+      this.querySelector(".seconds").setAttribute("hidden", "");
     }
   }
 
@@ -114,14 +120,18 @@ class FlipClock extends HTMLElement {
   render() {
     this.container`
       <div id="clock">
-        <span class="num" id="hours0">${this.time[0]}</span>
-        <span class="num" id="hours1">${this.time[1]}</span>
-        <b>:</b>
+        <span class="group hours">
+          <span class="num" id="hours0">${this.time[0]}</span>
+          <span class="num" id="hours1">${this.time[1]}</span>
+          <b>:</b>
+        </span>
         <span class="num" id="minutes0">${this.time[2]}</span>
         <span class="num" id="minutes1">${this.time[3]}</span>
-        <b>:</b>
-        <span class="num" id="seconds0">${this.time[4]}</span>
-        <span class="num" id="seconds1">${this.time[5]}</span>
+        <span class="group seconds">
+          <b>:</b>
+          <span class="num" id="seconds0">${this.time[4]}</span>
+          <span class="num" id="seconds1">${this.time[5]}</span>
+        </span>
       </div>
       <div class="buttons">
         <button class="toggle btn start-count">Start</button>
