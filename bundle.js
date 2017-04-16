@@ -2065,18 +2065,15 @@ class FlipClock extends HTMLElement {
     this.displayMode = this.getAttribute("display-mode") || null;
     this.startFrom = this.getAttribute("start-from") || null;
     this.render();
-    this.shadowRoot.querySelector(".start-count").addEventListener(
-      "click",
-      this.startCount
-    );
-    this.shadowRoot.querySelector(".stop-count").addEventListener(
-      "click",
-      this.stopCount
-    );
-    this.shadowRoot.querySelector(".reset-count").addEventListener(
-      "click",
-      this.resetCount
-    );
+    this.shadowRoot
+      .querySelector(".start-count")
+      .addEventListener("click", this.startCount);
+    this.shadowRoot
+      .querySelector(".stop-count")
+      .addEventListener("click", this.stopCount);
+    this.shadowRoot
+      .querySelector(".reset-count")
+      .addEventListener("click", this.resetCount);
     this.resetCount();
     if (this.displayMode === "timer" || this.displayMode === "countdown") {
       if (this.auto === true) {
@@ -2100,18 +2097,15 @@ class FlipClock extends HTMLElement {
   }
 
   disconnectedCallback() {
-    this.shadowRoot.querySelector(".start-count").removeEventListener(
-      "click",
-      this.startCount
-    );
-    this.shadowRoot.querySelector(".stop-count").removeEventListener(
-      "click",
-      this.stopCount
-    );
-    this.shadowRoot.querySelector(".reset-count").removeEventListener(
-      "click",
-      this.resetCount
-    );
+    this.shadowRoot
+      .querySelector(".start-count")
+      .removeEventListener("click", this.startCount);
+    this.shadowRoot
+      .querySelector(".stop-count")
+      .removeEventListener("click", this.stopCount);
+    this.shadowRoot
+      .querySelector(".reset-count")
+      .removeEventListener("click", this.resetCount);
   }
 
   createClock() {
@@ -2150,6 +2144,7 @@ class FlipClock extends HTMLElement {
 
   stopCount() {
     this.isRunning = false;
+    this.render();
   }
 
   resetCount() {
@@ -2177,7 +2172,7 @@ class FlipClock extends HTMLElement {
         </span>
       </div>
       <div class="buttons">
-        <button class="toggle btn start-count">Start</button>
+        <button class="toggle btn start-count" disabled="${this.isRunning}">Start</button>
         <button class="toggle btn stop-count">Stop</button>
         <button class="reset btn reset-count">Reset</button>
       </div>
