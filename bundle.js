@@ -2051,6 +2051,9 @@ class FlipClock extends HTMLElement {
     this.timer = null;
     this.isRunning = false;
     this.container = __WEBPACK_IMPORTED_MODULE_4_hyperhtml___default.a.bind(this);
+    this.startCount = this.startCount.bind(this);
+    this.stopCount = this.stopCount.bind(this);
+    this.resetCount = this.resetCount.bind(this);
   }
 
   connectedCallback() {
@@ -2063,15 +2066,15 @@ class FlipClock extends HTMLElement {
     this.render();
     this.querySelector(".start-count").addEventListener(
       "click",
-      this.startCount.bind(this)
+      this.startCount
     );
     this.querySelector(".stop-count").addEventListener(
       "click",
-      this.stopCount.bind(this)
+      this.stopCount
     );
     this.querySelector(".reset-count").addEventListener(
       "click",
-      this.resetCount.bind(this)
+      this.resetCount
     );
     this.resetCount();
     if (this.displayMode === "timer" || this.displayMode === "countdown") {
@@ -2098,15 +2101,15 @@ class FlipClock extends HTMLElement {
   disconnectedCallback() {
     this.querySelector(".start-count").removeEventListener(
       "click",
-      this.startCount.bind(this)
+      this.startCount
     );
     this.querySelector(".stop-count").removeEventListener(
       "click",
-      this.stopCount.bind(this)
+      this.stopCount
     );
     this.querySelector(".reset-count").removeEventListener(
       "click",
-      this.resetCount.bind(this)
+      this.resetCount
     );
   }
 
