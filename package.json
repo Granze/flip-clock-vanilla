@@ -2,7 +2,7 @@
   "name": "flip-clock-vanilla",
   "version": "1.0.0",
   "description": "A flip clock, timer and countdown made with vanilla web components",
-  "main": "index.js",
+  "main": "bundle.js",
   "repository": "git@github.com:Granze/flip-clock-vanilla.git",
   "author": "Maurizio Mangione <granzebru@gmail.com>",
   "scripts": {
@@ -13,6 +13,11 @@
     "hyperhtml": "^0.9.1"
   },
   "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-loader": "^6.4.1",
+    "babel-plugin-transform-custom-element-classes": "^0.1.0",
+    "babel-plugin-transform-es2015-classes": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
     "webpack": "^2.3.3"
   },
   "license": "MIT"
