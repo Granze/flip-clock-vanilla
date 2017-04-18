@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 21);
+/******/ 	return __webpack_require__(__webpack_require__.s = 9);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -387,7 +387,7 @@ module.exports = parse
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var startOfWeek = __webpack_require__(19)
+var startOfWeek = __webpack_require__(20)
 
 /**
  * @category ISO Week Helpers
@@ -526,12 +526,12 @@ module.exports = isDate
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getDayOfYear = __webpack_require__(10)
-var getISOWeek = __webpack_require__(11)
+var getDayOfYear = __webpack_require__(11)
+var getISOWeek = __webpack_require__(12)
 var getISOYear = __webpack_require__(3)
 var parse = __webpack_require__(0)
-var isValid = __webpack_require__(12)
-var enLocale = __webpack_require__(16)
+var isValid = __webpack_require__(13)
+var enLocale = __webpack_require__(17)
 
 /**
  * @category Common Helpers
@@ -1465,9 +1465,167 @@ try { module.exports = hyperHTML; } catch(o_O) {}
 
 /***/ }),
 /* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_date_fns_set_minutes__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_date_fns_set_minutes___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_date_fns_set_minutes__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_date_fns_add_seconds__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_date_fns_add_seconds___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_date_fns_add_seconds__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_date_fns_sub_seconds__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_date_fns_sub_seconds___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_date_fns_sub_seconds__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_date_fns_format__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_date_fns_format___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_date_fns_format__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_hyperhtml__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_hyperhtml___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_hyperhtml__);
+
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _templateObject = _taggedTemplateLiteral(["\n      <link rel=\"stylesheet\" href=\"./src/flip-clock.css\">\n      <div id=\"clock\">\n        <span class=\"group hours\" hidden=\"", "\">\n          <span class=\"num\" id=\"hours0\">", "</span>\n          <span class=\"num\" id=\"hours1\">", "</span>\n          <b>:</b>\n        </span>\n        <span class=\"num\" id=\"minutes0\">", "</span>\n        <span class=\"num\" id=\"minutes1\">", "</span>\n        <span class=\"group seconds\" hidden=\"", "\">\n          <b>:</b>\n          <span class=\"num\" id=\"seconds0\">", "</span>\n          <span class=\"num\" id=\"seconds1\">", "</span>\n        </span>\n      </div>\n      <div class=\"buttons\" hidden=\"", "\">\n        <button class=\"toggle btn start-count\" disabled=\"", "\">Start</button>\n        <button class=\"toggle btn stop-count\">Stop</button>\n        <button class=\"reset btn reset-count\">Reset</button>\n      </div>\n    "], ["\n      <link rel=\"stylesheet\" href=\"./src/flip-clock.css\">\n      <div id=\"clock\">\n        <span class=\"group hours\" hidden=\"", "\">\n          <span class=\"num\" id=\"hours0\">", "</span>\n          <span class=\"num\" id=\"hours1\">", "</span>\n          <b>:</b>\n        </span>\n        <span class=\"num\" id=\"minutes0\">", "</span>\n        <span class=\"num\" id=\"minutes1\">", "</span>\n        <span class=\"group seconds\" hidden=\"", "\">\n          <b>:</b>\n          <span class=\"num\" id=\"seconds0\">", "</span>\n          <span class=\"num\" id=\"seconds1\">", "</span>\n        </span>\n      </div>\n      <div class=\"buttons\" hidden=\"", "\">\n        <button class=\"toggle btn start-count\" disabled=\"", "\">Start</button>\n        <button class=\"toggle btn stop-count\">Stop</button>\n        <button class=\"reset btn reset-count\">Reset</button>\n      </div>\n    "]);
+
+function _taggedTemplateLiteral(strings, raw) { return Object.freeze(Object.defineProperties(strings, { raw: { value: Object.freeze(raw) } })); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _CustomElement() {
+  return Reflect.construct(HTMLElement, [], this.__proto__.constructor);
+}
+
+;
+Object.setPrototypeOf(_CustomElement.prototype, HTMLElement.prototype);
+Object.setPrototypeOf(_CustomElement, HTMLElement);
+
+
+
+
+
+
+var FlipClock = function (_CustomElement2) {
+  _inherits(FlipClock, _CustomElement2);
+
+  function FlipClock() {
+    _classCallCheck(this, FlipClock);
+
+    var _this = _possibleConstructorReturn(this, (FlipClock.__proto__ || Object.getPrototypeOf(FlipClock)).call(this));
+
+    _this.attachShadow({ mode: "open" });
+    _this.time = "000000";
+    _this.timer = null;
+    _this.isRunning = false;
+    _this.container = __WEBPACK_IMPORTED_MODULE_4_hyperhtml___default.a.bind(_this.shadowRoot);
+    _this.startCount = _this.startCount.bind(_this);
+    _this.stopCount = _this.stopCount.bind(_this);
+    _this.resetCount = _this.resetCount.bind(_this);
+    return _this;
+  }
+
+  _createClass(FlipClock, [{
+    key: "connectedCallback",
+    value: function connectedCallback() {
+      this.showButtons = this.hasAttribute("show-buttons");
+      this.hideHours = this.hasAttribute("hide-hours");
+      this.hideSeconds = this.hasAttribute("hide-seconds");
+      this.auto = this.hasAttribute("auto");
+      this.displayMode = this.getAttribute("display-mode") || null;
+      this.startFrom = this.getAttribute("start-from") || null;
+      this.render();
+      this.shadowRoot.querySelector(".start-count").addEventListener("click", this.startCount);
+      this.shadowRoot.querySelector(".stop-count").addEventListener("click", this.stopCount);
+      this.shadowRoot.querySelector(".reset-count").addEventListener("click", this.resetCount);
+      this.resetCount();
+      if (this.displayMode === "timer" || this.displayMode === "countdown") {
+        if (this.auto === true) {
+          this.startCount();
+        }
+      } else {
+        this.createClock();
+      }
+      if (this.startFrom) {
+        this.time = "00" + ("00" + this.startFrom).slice(-2) + "00";
+      }
+    }
+  }, {
+    key: "disconnectedCallback",
+    value: function disconnectedCallback() {
+      this.shadowRoot.querySelector(".start-count").removeEventListener("click", this.startCount);
+      this.shadowRoot.querySelector(".stop-count").removeEventListener("click", this.stopCount);
+      this.shadowRoot.querySelector(".reset-count").removeEventListener("click", this.resetCount);
+    }
+  }, {
+    key: "createClock",
+    value: function createClock() {
+      this.time = __WEBPACK_IMPORTED_MODULE_3_date_fns_format___default()(new Date(), "HHmmss");
+      setTimeout(this.createClock.bind(this), 1000);
+      this.render();
+    }
+  }, {
+    key: "createTimer",
+    value: function createTimer() {
+      if (this.isRunning) {
+        this.timer = __WEBPACK_IMPORTED_MODULE_1_date_fns_add_seconds___default()(this.timer, 1);
+        this.time = __WEBPACK_IMPORTED_MODULE_3_date_fns_format___default()(this.timer, "HHmmss");
+        setTimeout(this.createTimer.bind(this), 1000);
+        this.render();
+      }
+    }
+  }, {
+    key: "createCountdown",
+    value: function createCountdown() {
+      if (this.isRunning) {
+        if (this.time > 0) {
+          this.timer = __WEBPACK_IMPORTED_MODULE_2_date_fns_sub_seconds___default()(this.timer, 1);
+          this.time = __WEBPACK_IMPORTED_MODULE_3_date_fns_format___default()(this.timer, "HHmmss");
+          this.render();
+          setTimeout(this.createCountdown.bind(this), 1000);
+        }
+      }
+    }
+  }, {
+    key: "startCount",
+    value: function startCount() {
+      if (!this.timer) {
+        this.timer = __WEBPACK_IMPORTED_MODULE_0_date_fns_set_minutes___default()("000000", this.startFrom || 0);
+      }
+      this.isRunning = true;
+      this.startFrom ? this.createCountdown() : this.createTimer();
+    }
+  }, {
+    key: "stopCount",
+    value: function stopCount() {
+      this.isRunning = false;
+      this.render();
+    }
+  }, {
+    key: "resetCount",
+    value: function resetCount() {
+      this.isRunning = false;
+      this.time = this.startFrom ? "00" + this.startFrom + "00" : "000000";
+      this.timer = null;
+      this.render();
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      this.container(_templateObject, this.hideHours, this.time[0], this.time[1], this.time[2], this.time[3], this.hideSeconds, this.time[4], this.time[5], !this.showButtons, this.isRunning);
+    }
+  }]);
+
+  return FlipClock;
+}(_CustomElement);
+
+customElements.define("flip-clock", FlipClock);
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var startOfDay = __webpack_require__(17)
+var startOfDay = __webpack_require__(18)
 
 var MILLISECONDS_IN_MINUTE = 60000
 var MILLISECONDS_IN_DAY = 86400000
@@ -1511,12 +1669,12 @@ module.exports = differenceInCalendarDays
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
-var startOfYear = __webpack_require__(20)
-var differenceInCalendarDays = __webpack_require__(9)
+var startOfYear = __webpack_require__(21)
+var differenceInCalendarDays = __webpack_require__(10)
 
 /**
  * @category Day Helpers
@@ -1544,12 +1702,12 @@ module.exports = getDayOfYear
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
 var startOfISOWeek = __webpack_require__(1)
-var startOfISOYear = __webpack_require__(18)
+var startOfISOYear = __webpack_require__(19)
 
 var MILLISECONDS_IN_WEEK = 604800000
 
@@ -1584,7 +1742,7 @@ module.exports = getISOWeek
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isDate = __webpack_require__(4)
@@ -1625,7 +1783,7 @@ module.exports = isValid
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports) {
 
 var commonFormatterKeys = [
@@ -1659,7 +1817,7 @@ module.exports = buildFormattingTokensRegExp
 
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports) {
 
 function buildDistanceInWordsLocale () {
@@ -1764,10 +1922,10 @@ module.exports = buildDistanceInWordsLocale
 
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var buildFormattingTokensRegExp = __webpack_require__(13)
+var buildFormattingTokensRegExp = __webpack_require__(14)
 
 function buildFormatLocale () {
   // Note: in English, the names of days of the week and months are capitalized.
@@ -1858,11 +2016,11 @@ module.exports = buildFormatLocale
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var buildDistanceInWordsLocale = __webpack_require__(14)
-var buildFormatLocale = __webpack_require__(15)
+var buildDistanceInWordsLocale = __webpack_require__(15)
+var buildFormatLocale = __webpack_require__(16)
 
 /**
  * @category Locales
@@ -1875,7 +2033,7 @@ module.exports = {
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
@@ -1906,7 +2064,7 @@ module.exports = startOfDay
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getISOYear = __webpack_require__(3)
@@ -1944,7 +2102,7 @@ module.exports = startOfISOYear
 
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
@@ -1988,7 +2146,7 @@ module.exports = startOfWeek
 
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
@@ -2018,160 +2176,6 @@ function startOfYear (dirtyDate) {
 }
 
 module.exports = startOfYear
-
-
-/***/ }),
-/* 21 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_date_fns_set_minutes__ = __webpack_require__(6);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_date_fns_set_minutes___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_date_fns_set_minutes__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_date_fns_add_seconds__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_date_fns_add_seconds___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_date_fns_add_seconds__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_date_fns_sub_seconds__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_date_fns_sub_seconds___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_date_fns_sub_seconds__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_date_fns_format__ = __webpack_require__(5);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_date_fns_format___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_date_fns_format__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_hyperhtml__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_hyperhtml___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_hyperhtml__);
-
-
-
-
-
-
-
-
-class FlipClock extends HTMLElement {
-  constructor() {
-    super();
-    this.attachShadow({ mode: "open" });
-    this.time = "000000";
-    this.timer = null;
-    this.isRunning = false;
-    this.container = __WEBPACK_IMPORTED_MODULE_4_hyperhtml___default.a.bind(this.shadowRoot);
-    this.startCount = this.startCount.bind(this);
-    this.stopCount = this.stopCount.bind(this);
-    this.resetCount = this.resetCount.bind(this);
-  }
-
-  connectedCallback() {
-    this.showButtons = this.hasAttribute("show-buttons");
-    this.hideHours = this.hasAttribute("hide-hours");
-    this.hideSeconds = this.hasAttribute("hide-seconds");
-    this.auto = this.hasAttribute("auto");
-    this.displayMode = this.getAttribute("display-mode") || null;
-    this.startFrom = this.getAttribute("start-from") || null;
-    this.render();
-    this.shadowRoot
-      .querySelector(".start-count")
-      .addEventListener("click", this.startCount);
-    this.shadowRoot
-      .querySelector(".stop-count")
-      .addEventListener("click", this.stopCount);
-    this.shadowRoot
-      .querySelector(".reset-count")
-      .addEventListener("click", this.resetCount);
-    this.resetCount();
-    if (this.displayMode === "timer" || this.displayMode === "countdown") {
-      if (this.auto === true) {
-        this.startCount();
-      }
-    } else {
-      this.createClock();
-    }
-    if (this.startFrom) {
-      this.time = "00" + ("00" + this.startFrom).slice(-2) + "00";
-    }
-  }
-
-  disconnectedCallback() {
-    this.shadowRoot
-      .querySelector(".start-count")
-      .removeEventListener("click", this.startCount);
-    this.shadowRoot
-      .querySelector(".stop-count")
-      .removeEventListener("click", this.stopCount);
-    this.shadowRoot
-      .querySelector(".reset-count")
-      .removeEventListener("click", this.resetCount);
-  }
-
-  createClock() {
-    this.time = __WEBPACK_IMPORTED_MODULE_3_date_fns_format___default()(new Date(), "HHmmss");
-    setTimeout(this.createClock.bind(this), 1000);
-    this.render();
-  }
-
-  createTimer() {
-    if (this.isRunning) {
-      this.timer = __WEBPACK_IMPORTED_MODULE_1_date_fns_add_seconds___default()(this.timer, 1);
-      this.time = __WEBPACK_IMPORTED_MODULE_3_date_fns_format___default()(this.timer, "HHmmss");
-      setTimeout(this.createTimer.bind(this), 1000);
-      this.render();
-    }
-  }
-
-  createCountdown() {
-    if (this.isRunning) {
-      if (this.time > 0) {
-        this.timer = __WEBPACK_IMPORTED_MODULE_2_date_fns_sub_seconds___default()(this.timer, 1);
-        this.time = __WEBPACK_IMPORTED_MODULE_3_date_fns_format___default()(this.timer, "HHmmss");
-        this.render();
-        setTimeout(this.createCountdown.bind(this), 1000);
-      }
-    }
-  }
-
-  startCount() {
-    if (!this.timer) {
-      this.timer = __WEBPACK_IMPORTED_MODULE_0_date_fns_set_minutes___default()("000000", this.startFrom || 0);
-    }
-    this.isRunning = true;
-    this.startFrom ? this.createCountdown() : this.createTimer();
-  }
-
-  stopCount() {
-    this.isRunning = false;
-    this.render();
-  }
-
-  resetCount() {
-    this.isRunning = false;
-    this.time = this.startFrom ? "00" + this.startFrom + "00" : "000000";
-    this.timer = null;
-    this.render();
-  }
-
-  render() {
-    this.container`
-      <link rel="stylesheet" href="./src/flip-clock.css">
-      <div id="clock">
-        <span class="group hours" hidden="${this.hideHours}">
-          <span class="num" id="hours0">${this.time[0]}</span>
-          <span class="num" id="hours1">${this.time[1]}</span>
-          <b>:</b>
-        </span>
-        <span class="num" id="minutes0">${this.time[2]}</span>
-        <span class="num" id="minutes1">${this.time[3]}</span>
-        <span class="group seconds" hidden="${this.hideSeconds}">
-          <b>:</b>
-          <span class="num" id="seconds0">${this.time[4]}</span>
-          <span class="num" id="seconds1">${this.time[5]}</span>
-        </span>
-      </div>
-      <div class="buttons" hidden="${!this.showButtons}">
-        <button class="toggle btn start-count" disabled="${this.isRunning}">Start</button>
-        <button class="toggle btn stop-count">Stop</button>
-        <button class="reset btn reset-count">Reset</button>
-      </div>
-    `;
-  }
-}
-
-customElements.define("flip-clock", FlipClock);
 
 
 /***/ })
