@@ -1,43 +1,42 @@
-"use strict";
+'use strict';
 
-import setMinutes from "date-fns/set_minutes";
-import addSeconds from "date-fns/add_seconds";
-import subSeconds from "date-fns/sub_seconds";
-import format from "date-fns/format";
-import hyperHTML from "hyperhtml";
+import setMinutes from 'date-fns/set_minutes';
+import addSeconds from 'date-fns/add_seconds';
+import subSeconds from 'date-fns/sub_seconds';
+import format from 'date-fns/format';
+import hyperHTML from 'hyperhtml';
 
 class FlipClock extends HTMLElement {
   constructor() {
     super();
-    this.attachShadow({ mode: "open" });
-    this.time = "000000";
+    this.time = '000000';
     this.timer = null;
     this.isRunning = false;
-    this.container = hyperHTML.bind(this.shadowRoot);
+    this.html = hyperHTML.bind(this.attachShadow({ mode: 'open' }));
     this.startCount = this.startCount.bind(this);
     this.stopCount = this.stopCount.bind(this);
     this.resetCount = this.resetCount.bind(this);
   }
 
   connectedCallback() {
-    this.showButtons = this.hasAttribute("show-buttons");
-    this.hideHours = this.hasAttribute("hide-hours");
-    this.hideSeconds = this.hasAttribute("hide-seconds");
-    this.auto = this.hasAttribute("auto");
-    this.displayMode = this.getAttribute("display-mode") || null;
-    this.startFrom = this.getAttribute("start-from") || null;
+    this.showButtons = this.hasAttribute('show-buttons');
+    this.hideHours = this.hasAttribute('hide-hours');
+    this.hideSeconds = this.hasAttribute('hide-seconds');
+    this.auto = this.hasAttribute('auto');
+    this.displayMode = this.getAttribute('display-mode') || null;
+    this.startFrom = this.getAttribute('start-from') || null;
     this.render();
     this.shadowRoot
-      .querySelector(".start-count")
-      .addEventListener("click", this.startCount);
+      .querySelector('.start-count')
+      .addEventListener('click', this.startCount);
     this.shadowRoot
-      .querySelector(".stop-count")
-      .addEventListener("click", this.stopCount);
+      .querySelector('.stop-count')
+      .addEventListener('click', this.stopCount);
     this.shadowRoot
-      .querySelector(".reset-count")
-      .addEventListener("click", this.resetCount);
+      .querySelector('.reset-count')
+      .addEventListener('click', this.resetCount);
     this.resetCount();
-    if (this.displayMode === "timer" || this.displayMode === "countdown") {
+    if (this.displayMode === 'timer' || this.displayMode === 'countdown') {
       if (this.auto === true) {
         this.startCount();
       }
@@ -45,24 +44,24 @@ class FlipClock extends HTMLElement {
       this.createClock();
     }
     if (this.startFrom) {
-      this.time = "00" + ("00" + this.startFrom).slice(-2) + "00";
+      this.time = '00' + ('00' + this.startFrom).slice(-2) + '00';
     }
   }
 
   disconnectedCallback() {
     this.shadowRoot
-      .querySelector(".start-count")
-      .removeEventListener("click", this.startCount);
+      .querySelector('.start-count')
+      .removeEventListener('click', this.startCount);
     this.shadowRoot
-      .querySelector(".stop-count")
-      .removeEventListener("click", this.stopCount);
+      .querySelector('.stop-count')
+      .removeEventListener('click', this.stopCount);
     this.shadowRoot
-      .querySelector(".reset-count")
-      .removeEventListener("click", this.resetCount);
+      .querySelector('.reset-count')
+      .removeEventListener('click', this.resetCount);
   }
 
   createClock() {
-    this.time = format(new Date(), "HHmmss");
+    this.time = format(new Date(), 'HHmmss');
     setTimeout(this.createClock.bind(this), 1000);
     this.render();
   }
@@ -70,7 +69,7 @@ class FlipClock extends HTMLElement {
   createTimer() {
     if (this.isRunning) {
       this.timer = addSeconds(this.timer, 1);
-      this.time = format(this.timer, "HHmmss");
+      this.time = format(this.timer, 'HHmmss');
       setTimeout(this.createTimer.bind(this), 1000);
       this.render();
     }
@@ -80,7 +79,7 @@ class FlipClock extends HTMLElement {
     if (this.isRunning) {
       if (this.time > 0) {
         this.timer = subSeconds(this.timer, 1);
-        this.time = format(this.timer, "HHmmss");
+        this.time = format(this.timer, 'HHmmss');
         this.render();
         setTimeout(this.createCountdown.bind(this), 1000);
       }
@@ -89,7 +88,7 @@ class FlipClock extends HTMLElement {
 
   startCount() {
     if (!this.timer) {
-      this.timer = setMinutes("000000", this.startFrom || 0);
+      this.timer = setMinutes('000000', this.startFrom || 0);
     }
     this.isRunning = true;
     this.startFrom ? this.createCountdown() : this.createTimer();
@@ -102,13 +101,13 @@ class FlipClock extends HTMLElement {
 
   resetCount() {
     this.isRunning = false;
-    this.time = this.startFrom ? "00" + this.startFrom + "00" : "000000";
+    this.time = this.startFrom ? '00' + this.startFrom + '00' : '000000';
     this.timer = null;
     this.render();
   }
 
   render() {
-    this.container`
+    this.html`
       <link rel="stylesheet" href="./src/flip-clock.css">
       <div id="clock">
         <span class="group hours" hidden="${this.hideHours}">
@@ -125,7 +124,8 @@ class FlipClock extends HTMLElement {
         </span>
       </div>
       <div class="buttons" hidden="${!this.showButtons}">
-        <button class="toggle btn start-count" disabled="${this.isRunning}">Start</button>
+        <button class="toggle btn start-count" disabled="${this
+          .isRunning}">Start</button>
         <button class="toggle btn stop-count">Stop</button>
         <button class="reset btn reset-count">Reset</button>
       </div>
@@ -133,4 +133,4 @@ class FlipClock extends HTMLElement {
   }
 }
 
-customElements.define("flip-clock", FlipClock);
+customElements.define('flip-clock', FlipClock);
