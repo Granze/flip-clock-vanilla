@@ -1,9 +1,9 @@
-# (WIP) flip-clock
+# flip-clock
 A vanilla Custom Element implementation of the [original one](https://github.com/granze/flip-clock) made with Polymer
 ## Installation
 //TODO
-## Usage
-//TODO
+## Demo
+You can find a demo [here](http://granze.net/flip-clock-vanilla/).
 
 ## Attributes
 | Attribute | Description | default |
