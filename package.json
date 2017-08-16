@@ -1,6 +1,6 @@
 {
   "name": "flip-clock-vanilla",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A flip clock, timer and countdown made with vanilla web components",
   "main": "bundle.js",
   "repository": "git@github.com:Granze/flip-clock-vanilla.git",
