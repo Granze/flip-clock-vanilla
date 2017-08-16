@@ -6,11 +6,12 @@
   "repository": "git@github.com:Granze/flip-clock-vanilla.git",
   "author": "Maurizio Mangione <granzebru@gmail.com>",
   "scripts": {
-    "start": "webpack --config webpack.config.js -w"
+    "start": "webpack --config webpack.config.js -w",
+    "prettier": "prettier --single-quote --write src/flip-clock.js"
   },
   "dependencies": {
     "date-fns": "^1.17.0",
-    "hyperhtml": "^0.9.1"
+    "hyperhtml": "^1.1.2"
   },
   "devDependencies": {
     "babel-core": "^6.24.1",
@@ -18,6 +19,7 @@
     "babel-plugin-transform-custom-element-classes": "^0.1.0",
     "babel-plugin-transform-es2015-classes": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
+    "prettier": "^1.5.3",
     "webpack": "^2.3.3"
   },
   "license": "MIT"
