@@ -4,7 +4,7 @@ import setMinutes from 'date-fns/set_minutes';
 import addSeconds from 'date-fns/add_seconds';
 import subSeconds from 'date-fns/sub_seconds';
 import format from 'date-fns/format';
-import hyperHTML from 'hyperhtml';
+import { hyper } from 'hyperhtml/esm';
 
 class FlipClock extends HTMLElement {
   constructor() {
@@ -12,7 +12,7 @@ class FlipClock extends HTMLElement {
     this.time = '000000';
     this.timer = null;
     this.isRunning = false;
-    this.html = hyperHTML.bind(this.attachShadow({ mode: 'open' }));
+    this.html = hyper.bind(this.attachShadow({ mode: 'open' }));
     this.startCount = this.startCount.bind(this);
     this.stopCount = this.stopCount.bind(this);
     this.resetCount = this.resetCount.bind(this);

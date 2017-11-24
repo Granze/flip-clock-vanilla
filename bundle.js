@@ -63,14 +63,14 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 9);
+/******/ 	return __webpack_require__(__webpack_require__.s = 17);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isDate = __webpack_require__(4)
+var isDate = __webpack_require__(9)
 
 var MILLISECONDS_IN_HOUR = 3600000
 var MILLISECONDS_IN_MINUTE = 60000
@@ -385,9 +385,277 @@ module.exports = parse
 
 /***/ }),
 /* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const global = document.defaultView;
+/* harmony export (immutable) */ __webpack_exports__["c"] = global;
+
+
+// Node.CONSTANTS
+// 'cause some engine has no global Node defined
+// (i.e. Node, NativeScript, basicHTML ... )
+const ELEMENT_NODE = 1;
+/* harmony export (immutable) */ __webpack_exports__["b"] = ELEMENT_NODE;
+
+const ATTRIBUTE_NODE = 2;
+/* unused harmony export ATTRIBUTE_NODE */
+
+const TEXT_NODE = 3;
+/* harmony export (immutable) */ __webpack_exports__["i"] = TEXT_NODE;
+
+const COMMENT_NODE = 8;
+/* harmony export (immutable) */ __webpack_exports__["g"] = COMMENT_NODE;
+
+const DOCUMENT_FRAGMENT_NODE = 11;
+/* harmony export (immutable) */ __webpack_exports__["j"] = DOCUMENT_FRAGMENT_NODE;
+
+
+// SVG related constants
+const OWNER_SVG_ELEMENT = 'ownerSVGElement';
+/* harmony export (immutable) */ __webpack_exports__["f"] = OWNER_SVG_ELEMENT;
+
+const SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
+/* harmony export (immutable) */ __webpack_exports__["a"] = SVG_NAMESPACE;
+
+
+// Custom Elements / MutationObserver constants
+const CONNECTED = 'connected';
+/* harmony export (immutable) */ __webpack_exports__["k"] = CONNECTED;
+
+const DISCONNECTED = 'dis' + CONNECTED;
+/* harmony export (immutable) */ __webpack_exports__["l"] = DISCONNECTED;
+
+
+// hyperHTML related constants
+const EXPANDO = '_hyper: ';
+/* unused harmony export EXPANDO */
+
+const SHOULD_USE_TEXT_CONTENT = /^style|textarea$/i;
+/* harmony export (immutable) */ __webpack_exports__["h"] = SHOULD_USE_TEXT_CONTENT;
+
+const UID = EXPANDO + ((Math.random() * new Date) | 0) + ';';
+/* harmony export (immutable) */ __webpack_exports__["d"] = UID;
+
+const UIDC = '<!--' + UID + '-->';
+/* harmony export (immutable) */ __webpack_exports__["e"] = UIDC;
+
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// these are tiny helpers to simplify most common operations needed here
+const create = (node, type) => doc(node).createElement(type);
+/* harmony export (immutable) */ __webpack_exports__["b"] = create;
+
+const doc = node => node.ownerDocument || node;
+/* harmony export (immutable) */ __webpack_exports__["c"] = doc;
+
+const fragment = node => doc(node).createDocumentFragment();
+/* harmony export (immutable) */ __webpack_exports__["a"] = fragment;
+
+const text = (node, text) => doc(node).createTextNode(text);
+/* harmony export (immutable) */ __webpack_exports__["d"] = text;
+
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__features_detection_js__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__easy_dom_js__ = __webpack_require__(2);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return push; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return slice; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return splice; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return unshift; });
+
+
+
+
+
+
+// appends an array of nodes
+// to a generic node/fragment
+// When available, uses append passing all arguments at once
+// hoping that's somehow faster, even if append has more checks on type
+const append = __WEBPACK_IMPORTED_MODULE_1__features_detection_js__["a" /* hasAppend */] ?
+  (node, childNodes) => {
+    node.append.apply(node, childNodes);
+  } :
+  (node, childNodes) => {
+    const length = childNodes.length;
+    for (let i = 0; i < length; i++) {
+      node.appendChild(childNodes[i]);
+    }
+  };
+/* harmony export (immutable) */ __webpack_exports__["b"] = append;
+
+
+// remove comments parts from attributes to avoid issues
+// with either old browsers or SVG elements
+// export const cleanAttributes = html => html.replace(no, comments);
+const attrName = '[^\\S]+[^ \\f\\n\\r\\t\\/>"\'=]+';
+const no = new RegExp(
+  '(<[a-z]+[a-z0-9:_-]*)((?:' +
+    attrName +
+  '(?:=(?:\'.*?\'|".*?"|<.+?>|\\S+))?)+)([^\\S]*/?>)',
+  'gi'
+);
+const findAttributes = new RegExp('(' + attrName + '=)([\'"]?)' + __WEBPACK_IMPORTED_MODULE_0__constants_js__["e" /* UIDC */] + '\\2', 'gi');
+const comments = ($0, $1, $2, $3) =>
+  $1 + $2.replace(findAttributes, replaceAttributes) + $3;
+const replaceAttributes = ($0, $1, $2) => $1 + ($2 || '"') + __WEBPACK_IMPORTED_MODULE_0__constants_js__["d" /* UID */] + ($2 || '"');
+
+// given a node and a generic HTML content,
+// create either an SVG or an HTML fragment
+// where such content will be injected
+const createFragment = (node, html) =>
+  (__WEBPACK_IMPORTED_MODULE_0__constants_js__["f" /* OWNER_SVG_ELEMENT */] in node ?
+    SVGFragment :
+    HTMLFragment
+  )(node, html.replace(no, comments));
+/* harmony export (immutable) */ __webpack_exports__["h"] = createFragment;
+
+
+// IE/Edge shenanigans proof cloneNode
+// it goes through all nodes manually
+// instead of relying the engine to suddenly
+// merge nodes together
+const cloneNode = __WEBPACK_IMPORTED_MODULE_1__features_detection_js__["b" /* hasDoomedCloneNode */] ?
+  node => {
+    const clone = node.cloneNode();
+    const childNodes = node.childNodes ||
+                      // this is an excess of caution
+                      // but some node, in IE, might not
+                      // have childNodes property.
+                      // The following fallback ensure working code
+                      // in older IE without compromising performance
+                      // or any other browser/engine involved.
+                      /* istanbul ignore next */
+                      [];
+    const length = childNodes.length;
+    for (let i = 0; i < length; i++) {
+      clone.appendChild(cloneNode(childNodes[i]));
+    }
+    return clone;
+  } :
+  // the following ignore is due code-coverage
+  // combination of not having document.importNode
+  // but having a working node.cloneNode.
+  // This shenario is common on older Android/WebKit browsers
+  // but basicHTML here tests just two major cases:
+  // with document.importNode or with broken cloneNode.
+  /* istanbul ignore next */
+  node => node.cloneNode(true);
+
+// used to import html into fragments
+const importNode = __WEBPACK_IMPORTED_MODULE_1__features_detection_js__["c" /* hasImportNode */] ?
+  (doc, node) => doc.importNode(node, true) :
+  (doc, node) => cloneNode(node)
+/* harmony export (immutable) */ __webpack_exports__["g"] = importNode;
+
+
+// just recycling a one-off array to use slice/splice
+// in every needed place
+const {push, slice, splice, unshift} = [];
+
+
+// lazy evaluated, returns the unique identity
+// of a template literal, as tempalte literal itself.
+// By default, ES2015 template literals are unique
+// tag`a${1}z` === tag`a${2}z`
+// even if interpolated values are different
+// the template chunks are in a frozen Array
+// that is identical each time you use the same
+// literal to represent same static content
+// around its own interpolations.
+const unique = template => TL(template);
+/* harmony export (immutable) */ __webpack_exports__["a"] = unique;
+
+
+// TL returns a unique version of the template
+// it needs lazy feature detection
+// (cannot trust literals with transpiled code)
+let TL = template => {
+  if (
+    // TypeScript template literals are not standard
+    template.propertyIsEnumerable('raw') ||
+    (
+      // Firefox < 55 has not standard implementation neither
+      /Firefox\/(\d+)/.test((__WEBPACK_IMPORTED_MODULE_0__constants_js__["c" /* global */].navigator || {}).userAgent) &&
+      parseFloat(RegExp.$1) < 55
+    )
+  ) {
+    // in these cases, address templates once
+    const templateObjects = {};
+    // but always return the same template
+    TL = template => {
+      const key = '_' + template.join(__WEBPACK_IMPORTED_MODULE_0__constants_js__["d" /* UID */]);
+      return templateObjects[key] || (
+        templateObjects[key] = template
+      );
+    };
+  }
+  else {
+    // make TL an identity like function
+    TL = template => template;
+  }
+  return TL(template);
+};
+
+// create document fragments via native template
+// with a fallback for browsers that won't be able
+// to deal with some injected element such <td> or others
+const HTMLFragment = __WEBPACK_IMPORTED_MODULE_1__features_detection_js__["d" /* hasContent */] ?
+  (node, html) => {
+    const container = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__easy_dom_js__["b" /* create */])(node, 'template');
+    container.innerHTML = html;
+    return container.content;
+  } :
+  (node, html) => {
+    const container = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__easy_dom_js__["b" /* create */])(node, 'template');
+    const content = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__easy_dom_js__["a" /* fragment */])(node);
+    if (/^[^\S]*?<(col(?:group)?|t(?:head|body|foot|r|d|h))/i.test(html)) {
+      const selector = RegExp.$1;
+      container.innerHTML = '<table>' + html + '</table>';
+      append(content, slice.call(container.querySelectorAll(selector)));
+    } else {
+      container.innerHTML = html;
+      append(content, slice.call(container.childNodes));
+    }
+    return content;
+  };
+
+// creates SVG fragment with a fallback for IE that needs SVG
+// within the HTML content
+const SVGFragment = __WEBPACK_IMPORTED_MODULE_1__features_detection_js__["d" /* hasContent */] ?
+  (node, html) => {
+    const content = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__easy_dom_js__["a" /* fragment */])(node);
+    const container = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__easy_dom_js__["c" /* doc */])(node).createElementNS(__WEBPACK_IMPORTED_MODULE_0__constants_js__["a" /* SVG_NAMESPACE */], 'svg');
+    container.innerHTML = html;
+    append(content, slice.call(container.childNodes));
+    return content;
+  } :
+  (node, html) => {
+    const content = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__easy_dom_js__["a" /* fragment */])(node);
+    const container = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__easy_dom_js__["b" /* create */])(node, 'div');
+    container.innerHTML = '<svg xmlns="' + __WEBPACK_IMPORTED_MODULE_0__constants_js__["a" /* SVG_NAMESPACE */] + '">' + html + '</svg>';
+    append(content, slice.call(container.firstChild.childNodes));
+    return content;
+  };
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var startOfWeek = __webpack_require__(20)
+var startOfWeek = __webpack_require__(28)
 
 /**
  * @category ISO Week Helpers
@@ -415,7 +683,148 @@ module.exports = startOfISOWeek
 
 
 /***/ }),
-/* 2 */
+/* 5 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = Component;
+/* harmony export (immutable) */ __webpack_exports__["b"] = setup;
+// hyperHTML.Component is a very basic class
+// able to create Custom Elements like components
+// including the ability to listen to connect/disconnect
+// events via onconnect/ondisconnect attributes
+function Component() {}
+
+// components will lazily define html or svg properties
+// as soon as these are invoked within the .render() method
+// Such render() method is not provided by the base class
+// but it must be available through the Component extend.
+function setup(content) {
+  Object.defineProperties(
+    Component.prototype,
+    {
+      handleEvent: {value(e) {
+        const ct = e.currentTarget;
+        this[
+          ('getAttribute' in ct && ct.getAttribute('data-call')) ||
+          ('on' + e.type)
+        ](e);
+      }},
+      html: lazyGetter('html', content),
+      svg: lazyGetter('svg', content),
+      state: lazyGetter('state', function () { return this.defaultState; }),
+      defaultState: {get() { return {}; }},
+      setState: {value(state) {
+        const target = this.state;
+        const source = typeof state === 'function' ? state.call(this, target) : state;
+        for (const key in source) target[key] = source[key];
+        this.render();
+      }}
+    }
+  );
+}
+
+// instead of a secret key I could've used a WeakMap
+// However, attaching a property directly will result
+// into better performance with thousands of components
+// hanging around, and less memory pressure caused by the WeakMap
+const lazyGetter = (type, fn) => {
+  const secret = '_' + type + '$';
+  return {
+    get() {
+      return this[secret] || (this[type] = fn.call(this, type));
+    },
+    set(value) {
+      Object.defineProperty(this, secret, {configurable: true, value});
+    }
+  };
+};
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_js__ = __webpack_require__(1);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return Event; });
+
+
+// you know that kind of basics you need to cover
+// your use case only but you don't want to bloat the library?
+// There's even a package in here:
+// https://www.npmjs.com/package/poorlyfills
+
+// used to dispatch simple events
+let Event = __WEBPACK_IMPORTED_MODULE_0__constants_js__["c" /* global */].Event;
+try {
+  new Event('Event');
+} catch(o_O) {
+  Event = function (type) {
+    const e = document.createEvent('Event');
+    e.initEvent(type, false, false);
+    return e;
+  };
+}
+
+
+// used to store template literals
+const Map = __WEBPACK_IMPORTED_MODULE_0__constants_js__["c" /* global */].Map || function Map() {
+  const keys = [], values = [];
+  return {
+    get(obj) {
+      return values[keys.indexOf(obj)];
+    },
+    set(obj, value) {
+      values[keys.push(obj) - 1] = value;
+    }
+  };
+};
+/* harmony export (immutable) */ __webpack_exports__["c"] = Map;
+
+
+// used to store wired content
+const WeakMap = __WEBPACK_IMPORTED_MODULE_0__constants_js__["c" /* global */].WeakMap || function WeakMap() {
+  return {
+    get(obj) { return obj[__WEBPACK_IMPORTED_MODULE_0__constants_js__["d" /* UID */]]; },
+    set(obj, value) {
+      Object.defineProperty(obj, __WEBPACK_IMPORTED_MODULE_0__constants_js__["d" /* UID */], {
+        configurable: true,
+        value
+      });
+    }
+  };
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = WeakMap;
+
+
+// used to store hyper.Components
+const WeakSet = __WEBPACK_IMPORTED_MODULE_0__constants_js__["c" /* global */].WeakSet || function WeakSet() {
+  const wm = new WeakMap;
+  return {
+    add(obj) { wm.set(obj, true); },
+    has(obj) { return wm.get(obj) === true; }
+  };
+};
+/* harmony export (immutable) */ __webpack_exports__["d"] = WeakSet;
+
+
+// used to be sure IE9 or older Androids work as expected
+const isArray = Array.isArray || (toString =>
+  arr => toString.call(arr) === '[object Array]'
+)({}.toString);
+/* harmony export (immutable) */ __webpack_exports__["e"] = isArray;
+
+
+const trim = __WEBPACK_IMPORTED_MODULE_0__constants_js__["d" /* UID */].trim || function () {
+  return this.replace(/^\s+|\s+$/g, '');
+};
+/* harmony export (immutable) */ __webpack_exports__["b"] = trim;
+
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
@@ -446,11 +855,11 @@ module.exports = addSeconds
 
 
 /***/ }),
-/* 3 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
-var startOfISOWeek = __webpack_require__(1)
+var startOfISOWeek = __webpack_require__(4)
 
 /**
  * @category ISO Week-Numbering Year Helpers
@@ -497,7 +906,7 @@ module.exports = getISOYear
 
 
 /***/ }),
-/* 4 */
+/* 9 */
 /***/ (function(module, exports) {
 
 /**
@@ -523,15 +932,367 @@ module.exports = isDate
 
 
 /***/ }),
-/* 5 */
+/* 10 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shared_easy_dom_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Component_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__objects_Engine_js__ = __webpack_require__(31);
+// this is an overly defensive approach to avoid any possible
+// side-effect when the live collection of nodes is passed around
+
+
+
+
+
+/*                0                       0                 0
+000                00                   00                000
+ 0000              0000               0000              0000 
+  00000             0000             0000              0000  
+  000000            000000         000000            000000  
+   0000000           0000000      0000000          0000000   
+   0000000000000000  0000000000000000000  0000000000000000   
+   0000000000000000   000000000000000000  0000000000000000   
+   0000000000000000   00000000000000000   000000000000000    
+    0000000            000000   0000000           0000000    
+    0000000000000000   0000000 0000000   000000000000000     
+     0000000000000000  00000000000000  0000000000000000      
+      000000            000000000000             000000      
+       0000000000000      00000000       0000000000000       
+      0  0000000000000000           0000000000000000  0      
+       00  00000000000000000       0000000000000000  00      
+       000   00000     000000   0000000    00000   000       
+        0000   00000        000000       000000  00000       
+        000000  000000     0000000     000000  000000        
+         0000000  000000   00000000   00000  0000000         
+         00000000   00000 000000000 00000  000000000         
+         0000000000   00000000000000000   0000000000         
+          00000000000   00000000000000  00000000000          
+          0000000000000   000000000   0000000000000          
+                000000000   00000   0000000000               
+                       0000  000  0000                       
+                            0 0 0                            
+                                                             
+                    slyer0.deviantart.com                  */
+
+// Megatron is a transformer in charge of mutating
+// a list of live DOM nodes into a new list.
+function Megatron(node, childNodes) {
+  this.node = node;
+  this.childNodes = childNodes;
+}
+
+// it carries the default merge/diff engine
+// that can be swapped via hyperHTML.engine = {...}
+// See hyperhtml-majinbuu to know more
+Megatron.engine = __WEBPACK_IMPORTED_MODULE_3__objects_Engine_js__["a" /* default */];
+
+// quickly erase the related content
+// optionally add a single node/component as value
+Megatron.prototype.empty = function empty(value) {
+  const node = this.node;
+  const childNodes = this.childNodes;
+  let length = childNodes.length;
+  if (length) {
+    const pn = node.parentNode;
+    const remove = __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["d" /* splice */].call(childNodes, 0, length);
+    while (length--) pn.removeChild(utils.getNode(remove[length]));
+  }
+  if (value) {
+    __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["e" /* push */].call(childNodes, value);
+    node.parentNode.insertBefore(utils.getNode(value), node);
+  }
+};
+
+// there are numerous ways to optimize a list of nodes
+// that is going to represent another list (or even the same)
+Megatron.prototype.become = function become(virtual) {
+  const vlength = virtual.length;
+  // if there are new elements to push ..
+  if (0 < vlength) {
+    const node = this.node;
+    const live = this.childNodes;
+    const pn = node.parentNode;
+    let llength = live.length;
+    let l = 0;
+    let v = 0;
+    // if the current list is empty, append all nodes
+    if (llength < 1) {
+      __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["e" /* push */].apply(
+        live,
+        utils.insert(pn, virtual, node)
+      );
+      return;
+    }
+    // if all elements are the same, do pretty much nothing
+    while (l < llength && v < vlength) {
+      // appending nodes/components could be just fine
+      if (live[l] !== virtual[v]) break;
+      l++;
+      v++;
+    }
+    // if we reached the live length destination
+    if (l === llength) {
+      // there could be a tie (nothing to do)
+      if (vlength === llength) return;
+      // or there's only to append
+      __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["e" /* push */].apply(
+        live,
+        utils.insert(pn, __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["c" /* slice */].call(virtual, v), node)
+      );
+      return;
+    }
+    // if the new length is reached though
+    if (v === vlength) {
+      // there are nodes to remove
+      utils.remove(pn, __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["d" /* splice */].call(live, l, llength));
+      return;
+    }
+    // otherwise let's check backward
+    let rl = llength;
+    let rv = vlength;
+    while (rl && rv) {
+      if (live[--rl] !== virtual[--rv]) {
+        ++rl;
+        ++rv;
+        break;
+      }
+    }
+    // now ... lists are not identical, we know that,
+    // but maybe it was a prepend ... so if live length is covered
+    if (rl < 1) {
+      // return after pre-pending all nodes
+      __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["f" /* unshift */].apply(
+        live,
+        utils.insert(pn, __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["c" /* slice */].call(virtual, 0, rv), utils.getNode(live[0]))
+      );
+      return;
+    }
+    // or maybe, it was a removal of nodes at the beginning
+    if (rv < 1) {
+      // return after removing all pre-nodes
+      utils.remove(pn, __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["d" /* splice */].call(live, l, rl));
+      return;
+    }
+    // now we have a boundary of nodes that need to be changed
+    // all the discovered info ar passed to the engine
+    Megatron.engine.update(
+      utils, pn, node,
+      live, l, rl, llength,
+      virtual, v, rv, vlength
+    );
+  } else {
+    this.empty();
+  }
+};
+
+const utils = {
+
+  // the basic default engine is always provided
+  // in case there are conditions that need it
+  engine: __WEBPACK_IMPORTED_MODULE_3__objects_Engine_js__["a" /* default */],
+
+  // an item could be an hyperHTML.Component and, in such case,
+  // it should be rendered as node
+  getNode: node => node instanceof __WEBPACK_IMPORTED_MODULE_2__Component_js__["a" /* default */] ? node.render() : node,
+
+  // append a list of nodes before another node
+  insert: (parentNode, nodes, node) => {
+    const length = nodes.length;
+    if (length === 1) {
+      parentNode.insertBefore(utils.getNode(nodes[0]), node);
+    } else {
+      let i = 0;
+      const tmp = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__shared_easy_dom_js__["a" /* fragment */])(parentNode);
+      while (i < length)
+        tmp.appendChild(utils.getNode(nodes[i++]));
+      parentNode.insertBefore(tmp, node);
+    }
+    return nodes;
+  },
+
+  // drop a list of nodes from their parentNode
+  remove: (parentNode, nodes) => {
+    let i = nodes.length;
+    while (i--) {
+      parentNode.removeChild(utils.getNode(nodes[i]));
+    }
+  }
+};
+
+/*                  _____
+                ___/  |  \___
+             __/      |      \__
+          __/         |         \__
+         /|           |           |\
+        | |           |           | |
+        | |           |           | |
+       |  |           |           |  |
+       |  |        ___|___        |  |
+      /   |    ___/  ___  \___    |   \
+      |   |___/  ___/| |\___  \___|   |
+      |   /   __/_ \_| |_/ _\__   \   |
+     |   |___/\_  \_______/  _/\___|   |
+    /   /___/   \___\___/___/   \___\   \
+   /    |   |       |   |       |   |    \
+  /     |   |_      |   |      _|   |     \
+ |___   |___|_\   _/|___|\_   /_|___|   ___|
+ |_  \    |   |\ /  |___|  \ /|   |    /  _|
+ ||| |    |   | |  _______  | |   |    | |||
+ ||| |    |   | |  \_____/  | |   |    | |||
+ ||| |    |   | |    ___    | |   |    | |||
+ ||| |    |   | |           | |   |    | |||
+ ||| |    |   | |           | |   |    | |||
+ ||| |    |   | |           | |   |    | |||
+ ||| |    |   |\|           |/|   |    | |||
+ \||_|____|___|-\___________/-|___|____|_||/
+
+    cybertronchronicle.freewebspace.com   */
+
+/* harmony default export */ __webpack_exports__["a"] = (Megatron);
+
+/* TODO: benchmark this is needed at all
+// instead of checking instanceof each time and render potentially twice
+// use a map to retrieve nodes from a generic item
+
+import {Map} from '../shared/poorlyfills.js';
+const get = (map, node) => map.get(node) || set(map, node);
+const set = (map, node) => {
+  const value = utils.getNode(node);
+  map.set(node, value);
+  return value;
+};
+
+*/
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shared_poorlyfills_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shared_constants_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objects_Updates_js__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shared_utils_js__ = __webpack_require__(3);
+
+
+
+
+
+// a weak collection of contexts that
+// are already known to hyperHTML
+const bewitched = new __WEBPACK_IMPORTED_MODULE_0__shared_poorlyfills_js__["a" /* WeakMap */];
+
+// the collection of all template literals
+// since these are unique and immutable
+// for the whole application life-cycle
+const templates = new __WEBPACK_IMPORTED_MODULE_0__shared_poorlyfills_js__["c" /* Map */];
+
+// better known as hyper.bind(node), the render is
+// the main tag function in charge of fully upgrading
+// or simply updating, contexts used as hyperHTML targets.
+// The `this` context is either a regular DOM node or a fragment.
+function render(template) {
+  const wicked = bewitched.get(this);
+  if (wicked && wicked.template === __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__shared_utils_js__["a" /* unique */])(template)) {
+    update.apply(wicked.updates, arguments);
+  } else {
+    upgrade.apply(this, arguments);
+  }
+  return this;
+}
+
+// an upgrade is in charge of collecting template info,
+// parse it once, if unknown, to map all interpolations
+// as single DOM callbacks, relate such template
+// to the current context, and render it after cleaning the context up
+function upgrade(template) {
+  template = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__shared_utils_js__["a" /* unique */])(template);
+  const info =  templates.get(template) ||
+                createTemplate.call(this, template);
+  const fragment = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__shared_utils_js__["g" /* importNode */])(this.ownerDocument, info.fragment);
+  const updates = __WEBPACK_IMPORTED_MODULE_2__objects_Updates_js__["a" /* default */].create(fragment, info.paths);
+  bewitched.set(this, {template, updates});
+  update.apply(updates, arguments);
+  this.textContent = '';
+  this.appendChild(fragment);
+}
+
+// an update simply loops over all mapped DOM operations
+function update() {
+  const length = arguments.length;
+  for (let i = 1; i < length; i++) {
+    this[i - 1](arguments[i]);
+  }
+}
+
+// a template can be used to create a document fragment
+// aware of all interpolations and with a list
+// of paths used to find once those nodes that need updates,
+// no matter if these are attributes, text nodes, or regular one
+function createTemplate(template) {
+  const paths = [];
+  const fragment = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__shared_utils_js__["h" /* createFragment */])(this, template.join(__WEBPACK_IMPORTED_MODULE_1__shared_constants_js__["e" /* UIDC */]));
+  __WEBPACK_IMPORTED_MODULE_2__objects_Updates_js__["a" /* default */].find(fragment, paths, template.slice());
+  const info = {fragment, paths};
+  templates.set(template, info);
+  return info;
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (render);
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const intents = {};
+const keys = [];
+const hasOwnProperty = intents.hasOwnProperty;
+
+let length = 0;
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+
+  // hyperHTML.define('intent', (object, update) => {...})
+  // can be used to define a third parts update mechanism
+  // when every other known mechanism failed.
+  // hyper.define('user', info => info.name);
+  // hyper(node)`<p>${{user}}</p>`;
+  define: (intent, callback) => {
+    if (!(intent in intents)) {
+      length = keys.push(intent);
+    }
+    intents[intent] = callback;
+  },
+
+  // this method is used internally as last resort
+  // to retrieve a value out of an object
+  invoke: (object, callback) => {
+    for (let i = 0; i < length; i++) {
+      let key = keys[i];
+      if (hasOwnProperty.call(object, key)) {
+        return intents[key](object[key], callback);
+      }
+    }
+  }
+});
+
+
+/***/ }),
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getDayOfYear = __webpack_require__(11)
-var getISOWeek = __webpack_require__(12)
-var getISOYear = __webpack_require__(3)
+var getDayOfYear = __webpack_require__(19)
+var getISOWeek = __webpack_require__(20)
+var getISOYear = __webpack_require__(8)
 var parse = __webpack_require__(0)
-var isValid = __webpack_require__(13)
-var enLocale = __webpack_require__(17)
+var isValid = __webpack_require__(21)
+var enLocale = __webpack_require__(25)
 
 /**
  * @category Common Helpers
@@ -857,7 +1618,7 @@ module.exports = format
 
 
 /***/ }),
-/* 6 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
@@ -888,10 +1649,10 @@ module.exports = setMinutes
 
 
 /***/ }),
-/* 7 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var addSeconds = __webpack_require__(2)
+var addSeconds = __webpack_require__(7)
 
 /**
  * @category Second Helpers
@@ -917,1189 +1678,103 @@ module.exports = subSeconds
 
 
 /***/ }),
-/* 8 */
-/***/ (function(module, exports) {
+/* 16 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-var hyperHTML = (function (globalDocument) {'use strict';
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__classes_Megatron_js__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__classes_Component_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__objects_Intent_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__hyper_wire_js__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__hyper_render_js__ = __webpack_require__(11);
+/* unused harmony reexport Component */
+/* unused harmony reexport wire */
+/* unused harmony export bind */
+/* unused harmony export define */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return hyper; });
+/* unused harmony export default */
+/*! (c) Andrea Giammarchi (ISC) */
 
-  /*! (c) 2017 Andrea Giammarchi @WebReflection, (ISC) */
 
-  // ---------------------------------------------
-  // hyperHTML Public API
-  // ---------------------------------------------
 
-  // The document must be swap-able at runtime.
-  // Needed by both basicHTML and nativeHTML
-  hyperHTML.document = globalDocument;
 
-  // hyperHTML.bind(el) ⚡️
-  function hyperHTML(template) {
-    var hyper = hypers.get(this);
-    if (
-      !hyper ||
-      hyper.template !== (FF ? unique(template) : template)
-    ) {
-      hyper = upgrade.apply(this, arguments);
-      hypers.set(this, hyper);
-    }
-    update.apply(hyper.updates, arguments);
-    return this;
+
+
+
+// all functions are self bound to the right context
+// you can do the following
+// const {bind, wire} = hyperHTML;
+// and use them right away: bind(node)`hello!`;
+const bind = context => __WEBPACK_IMPORTED_MODULE_4__hyper_render_js__["a" /* default */].bind(context);
+const define = __WEBPACK_IMPORTED_MODULE_2__objects_Intent_js__["a" /* default */].define;
+
+hyper.Component = __WEBPACK_IMPORTED_MODULE_1__classes_Component_js__["a" /* default */];
+hyper.bind = bind;
+hyper.define = define;
+hyper.hyper = hyper;
+hyper.wire = __WEBPACK_IMPORTED_MODULE_3__hyper_wire_js__["a" /* default */];
+
+// it is possible to define a different engine
+// to resolve nodes diffing.
+// The engine must provide an update method
+// capable of mutating liveNodes collection
+// and the related DOM.
+// See hyperhtml-majinbuu to know more
+Object.defineProperty(hyper, 'engine', {
+  get: function get() {
+    return __WEBPACK_IMPORTED_MODULE_0__classes_Megatron_js__["a" /* default */].engine;
+  },
+  set: function set(engine) {
+    __WEBPACK_IMPORTED_MODULE_0__classes_Megatron_js__["a" /* default */].engine = engine;
   }
+});
 
-  // hyperHTML.adopt(el) 🐣
-  hyperHTML.adopt = function adopt(node) {
-    return function () {
-      notAdopting = false;
-      hyperHTML.apply(node, arguments);
-      notAdopting = true;
-      return node;
-    };
-  };
+// the wire content is the lazy defined
+// html or svg property of each hyper.Component
+__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__classes_Component_js__["b" /* setup */])(__WEBPACK_IMPORTED_MODULE_3__hyper_wire_js__["b" /* content */]);
 
-  // hyperHTML.define('transformer', callback) 🌀
-  hyperHTML.define = function define(transformer, callback) {
-    transformers[transformer] = callback;
-  };
+// everything is exported directly or through the
+// hyperHTML callback, when used as top level script
 
-  // hyperHTML.escape('<html>') => '&lt;text&gt;' 🏃
-  hyperHTML.escape = function escape(html) {
-    return html.replace(reEscape, fnEscape);
-  };
 
-  // hyperHTML.wire(obj, 'type:ID') ➰
-  hyperHTML.wire = function wire(obj, type) {
-    return arguments.length < 1 ?
-      wireContent('html') :
-      (obj == null ?
-        wireContent(type || 'html') :
-        wireWeakly(obj, type || 'html')
-      );
-  };
-
-  // - - - - - - - - - - - - - - - - - - - - - - -
-
-  // ---------------------------------------------
-  // Constants
-  // ---------------------------------------------
-
-  // Node.CONSTANTS
-  // without assuming Node is globally available
-  // since this project is used on the backend too
-  var ELEMENT_NODE = 1;
-  var ATTRIBUTE_NODE = 2;
-  var TEXT_NODE = 3;
-  var COMMENT_NODE = 8;
-  var DOCUMENT_FRAGMENT_NODE = 11;
-
-  // SVG related
-  var OWNER_SVG_ELEMENT = 'ownerSVGElement';
-  var SVG_NAMESPACE = 'http://www.w3.org/2000/svg';
-
-  var SHOULD_USE_ATTRIBUTE = /^style$/i;
-  var EXPANDO = '_hyper_html: ';
-  var UID = EXPANDO + ((Math.random() * new Date) | 0) + ';';
-  var UIDC = '<!--' + UID + '-->';
-
-  // ---------------------------------------------
-  // DOM Manipulation
-  // ---------------------------------------------
-
-  // return -1 if no differences are found
-  // the index where differences starts otherwise
-  function indexOfDifferences(a, b) {
-    var
-      i = 0,
-      aLength = a.length,
-      bLength = b.length
-    ;
-    while (i < aLength) {
-      if (i < bLength && a[i] === b[i]) i++;
-      else return i;
-    }
-    return i === bLength ? -1 : i;
-  }
-
-  // accordingly with the content type
-  // it replace the content of a node
-  // with the give child
-  function populateNode(parent, child) {
-    switch (child.nodeType) {
-      case ELEMENT_NODE:
-        var childNodes = parent.childNodes;
-        if (childNodes[0] === child) {
-          removeNodeList(childNodes, 1);
-          break;
-        }
-        resetAndPopulate(parent, child);
-        break;
-      case DOCUMENT_FRAGMENT_NODE:
-        if (indexOfDifferences(parent.childNodes, child.childNodes) !== -1) {
-          resetAndPopulate(parent, child);
-        }
-        break;
-      case TEXT_NODE:
-        parent.textContent = child.textContent;
-        break;
-    }
-  }
-
-  // remove a list of nodes from startIndex to list.length
-  function removeNodeList(list, startIndex) {
-    var length = list.length, child;
-    while (startIndex < length--) {
-      child = list[length];
-      child.parentNode.removeChild(child);
-    }
-  }
-
-  // erase a node content and populate it
-  function resetAndPopulate(parent, child) {
-    parent.textContent = '';
-    parent.appendChild(child);
-  }
-
-  // append childNodes to a node from a specific index
-  function updateViaArray(node, childNodes, i) {
-    var fragment = emptyFragment(node);
-    if (i !== 0) {
-      removeNodeList(node.childNodes, i);
-      appendNodes(fragment, childNodes.slice(i));
-      node.appendChild(fragment);
-    } else {
-      appendNodes(fragment, childNodes);
-      resetAndPopulate(node, fragment);
-    }
-  }
-
-  // ---------------------------------------------
-  // hyperHTML Operations
-  // ---------------------------------------------
-
-  // `<div class="${'attr'}"></div>`
-  // `<div onclick="${function () {... }}"></div>`
-  // `<div onclick="${{handleEvent(){ ... }}}"></div>`
-  // `<div contenteditable="${true}"></div>`
-  function setAttribute(attribute, removeAttributes) {
-    var
-      name = attribute.name,
-      node = attribute.ownerElement,
-      isEvent = /^on/.test(name),
-      isSpecial = name in node && !(
-                    // always use set attribute with SVGs
-                    OWNER_SVG_ELEMENT in node ||
-                    SHOULD_USE_ATTRIBUTE.test(name)
-                  ),
-      type = isEvent ? name.slice(2) : '',
-      noOwner = isEvent || isSpecial,
-      oldValue
-    ;
-    if (noOwner) removeAttributes.push(node, name);
-    return isEvent ?
-      function eventAttr(newValue) {
-        if (oldValue !== newValue) {
-          if (oldValue) node.removeEventListener(type, oldValue, false);
-          oldValue = newValue;
-          if (newValue) node.addEventListener(type, newValue, false);
-        }
-      } :
-      (isSpecial ?
-        function specialAttr(newValue) {
-          if (oldValue !== newValue) {
-            oldValue = newValue;
-            // WebKit moves the cursor if input.value
-            // is set again, even if same value
-            if (node[name] !== newValue) {
-              // let the browser handle the case
-              // input.value = null;
-              // input.value; // ''
-              if (newValue == null) {
-                // reflect the null intent,
-                // do not pass undefined!
-                node[name] = null;
-                node.removeAttribute(name);
-              } else {
-                node[name] = newValue;
-              }
-            }
-          }
-        } :
-        function normalAttr(newValue) {
-          if (oldValue !== newValue) {
-            oldValue = newValue;
-            // avoid triggering again attributeChangeCallback
-            // if the value was identical
-            if (attribute.value !== newValue) {
-              if (newValue == null) {
-                if (!noOwner) {
-                  // TODO: should attribute.value = null here?
-                  noOwner = true;
-                  node.removeAttributeNode(attribute);
-                }
-              } else {
-                attribute.value = newValue;
-                if (noOwner) {
-                  noOwner = false;
-                  node.setAttributeNode(attribute);
-                }
-              }
-            }
-          }
-        }
-      );
-  }
-
-  // `<p>${'any'}</p>`
-  // `<li>a</li>${'virtual'}<li>c</li>`
-  function setVirtualContent(node, childNodes) {
-    var justContent = !childNodes;
-    return function anyVirtual(value) {
-      switch (typeof value) {
-        case 'string':
-        case 'number':
-        case 'boolean':
-          if (justContent) {
-            node.textContent = value;
-          } else if (
-            childNodes.length === 1 &&
-            childNodes[0].nodeType === TEXT_NODE
-          ) {
-            childNodes[0].textContent = value;
-          } else {
-            removeNodeList(childNodes, 0);
-            childNodes = [createText(node, value)];
-            node.parentNode.insertBefore(childNodes[0], node);
-          }
-          break;
-        case 'function':
-          if (justContent) {
-            anyVirtual(value(node, getChildren(node), 0));
-          } else {
-            anyVirtual(value(node.parentNode, childNodes, 0));
-          }
-          break;
-        case 'object':
-        case 'undefined':
-          if (value == null) {
-            anyVirtual('');
-            break;
-          }
-        default:
-          if (isArray(value)) {
-            var length = value.length;
-            if (length === 0 && !justContent) {
-              removeNodeList(childNodes, 0);
-              childNodes = [];
-            } else {
-              switch (typeof value[0]) {
-                case 'string':
-                case 'number':
-                case 'boolean':
-                  anyVirtual({html: value});
-                  break;
-                case 'function':
-                  var parentNode = justContent ? node : node.parentNode;
-                  var children = justContent ?
-                      slice.call(getChildren(node)) : childNodes;
-                  for (var i = 0; i < length; i++) {
-                    value[i] = value[i](parentNode, children, i);
-                  }
-                  if (justContent) removeNodeList(children, i);
-                  anyVirtual(value.concat.apply([], value));
-                  break;
-                case 'object':
-                  if (isArray(value[0])) {
-                    value = value.concat.apply([], value);
-                  }
-                  if (isPromise_ish(value[0])) {
-                    Promise.all(value).then(anyVirtual);
-                    break;
-                  }
-                default:
-                  if (justContent) {
-                    var i = indexOfDifferences(node.childNodes, value);
-                    if (i !== -1) updateViaArray(node, value, i);
-                  } else {
-                    updateVirtualNodes(node, childNodes, value);
-                  }
-                  break;
-              }
-            }
-          } else if (isNode_ish(value)) {
-            if (justContent) populateNode(node, value);
-            else updateVirtualNodes(
-              node,
-              childNodes,
-              value.nodeType === DOCUMENT_FRAGMENT_NODE ?
-                slice.call(value.childNodes) :
-                [value]
-            );
-          } else if (isPromise_ish(value)) {
-            value.then(anyVirtual);
-          } else if ('placeholder' in value) {
-            invokeAtDistance(anyVirtual, value);
-          } else if ('text' in value) {
-            anyVirtual(String(value.text));
-          } else if ('any' in value) {
-            anyVirtual(value.any);
-          } else if ('html' in value) {
-            var html = [].concat(value.html).join('');
-            if (justContent) node.innerHTML = html;
-            else {
-              removeNodeList(childNodes, 0);
-              var fragment = createFragment(node, html);
-              childNodes = slice.call(fragment.childNodes);
-              node.parentNode.insertBefore(fragment, node);
-            }
-          } else if ('length' in value) {
-            anyVirtual(slice.call(value));
-          } else {
-            anyVirtual(invokeTransformer(value));
-          }
-          break;
-      }
-    };
-  }
-
-  // ---------------------------------------------
-  // DOM Traversing
-  // ---------------------------------------------
-
-  // look for attributes that contains the comment text
-  function attributesSeeker(node, paths) {
-    for (var
-      attribute,
-      value = UID,
-      attributes = node.attributes,
-      i = 0, length = attributes.length;
-      i < length; i++
-    ) {
-      attribute = attributes[i];
-      if (attribute.value === value) {
-        paths.push(
-          Path(
-            'attr',
-            // with IE the order doesn't really matter
-            // as long as the right attribute is addressed
-            IE ?
-              node.attributes[IEAttributes.shift()] :
-              attribute
+// by default, hyperHTML is a smart function
+// that "magically" understands what's the best
+// thing to do with passed arguments
+function hyper(HTML) {
+  return arguments.length < 2 ?
+    (HTML == null ?
+      __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__hyper_wire_js__["b" /* content */])('html') :
+      (typeof HTML === 'string' ?
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__hyper_wire_js__["a" /* default */])(null, HTML) :
+        ('raw' in HTML ?
+          __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__hyper_wire_js__["b" /* content */])('html')(HTML) :
+          ('nodeType' in HTML ?
+            __WEBPACK_IMPORTED_MODULE_4__hyper_render_js__["a" /* default */].bind(HTML) :
+            __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__hyper_wire_js__["c" /* weakly */])(HTML, 'html')
           )
-        );
-      }
-    }
-  }
-
-  // walk the fragment tree in search of comments
-  function hyperSeeker(node, paths) {
-    for (var
-      child,
-      childNodes = node.childNodes,
-      length = childNodes.length,
-      i = 0; i < length; i++
-    ) {
-      child = childNodes[i];
-      switch (child.nodeType) {
-        case ELEMENT_NODE:
-          attributesSeeker(child, paths);
-          hyperSeeker(child, paths);
-          break;
-        case COMMENT_NODE:
-          if (child.textContent === UID) {
-            if (length === 1 || (
-              noContent(child, 'previous') &&
-              noContent(child, 'next')
-            )) {
-              paths.push(Path('any', node));
-              i = length;
-            } else {
-              paths.push(Path('virtual', child));
-            }
-          }
-          break;
-        case TEXT_NODE:
-          if (
-            SHOULD_USE_ATTRIBUTE.test(node.nodeName) &&
-            trim.call(child.textContent) === UIDC
-          ) {
-            paths.push(Path('any', node));
-          }
-          break;
-      }
-    }
-  }
-
-  // ---------------------------------------------
-  // Features detection / ugly UA sniffs
-  // ---------------------------------------------
-  var featureFragment = createDocumentFragment(globalDocument);
-
-  // Firefox < 55 has non standard template literals.
-  // https://bugzilla.mozilla.org/show_bug.cgi?id=1108941
-  // TODO: is there any better way to feature detect this ?
-  var FF = typeof navigator === 'object' &&
-            /Firefox\/(\d+)/.test(navigator.userAgent) &&
-            parseFloat(RegExp.$1) < 55;
-
-  // If attributes order is shuffled, threat the browser differently
-  // Usually this is a well known IE only limitation but some older FF does the same.
-  var IE =  (function () {
-              var p  = globalDocument.createElement('p');
-              p.innerHTML = '<i data-i="" class=""></i>';
-              return /class/i.test(p.firstChild.attributes[0].name);
-            }());
-
-
-  // beside IE, old WebKit browsers don't have `children` in DocumentFragment
-  var WK = !('children' in featureFragment);
-
-  // ---------------------------------------------
-  // Helpers
-  // ---------------------------------------------
-
-  // used to convert childNodes to Array
-  var slice = [].slice;
-
-  // used to sanitize html
-  var reEscape = /[&<>'"]/g;
-  var oEscape = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    "'": '&#39;',
-    '"': '&quot;'
-  };
-  function fnEscape(m) {
-    return oEscape[m];
-  }
-
-  // return content as html
-  function asHTML(html) {
-    return {html: html};
-  }
-
-  // return a single node or an Array or nodes
-  function createContent(node) {
-    for (var
-      child,
-      content = [],
-      childNodes = node.childNodes,
-      i = 0,
-      length = childNodes.length;
-      i < length; i++
-    ) {
-      child = childNodes[i];
-      if (
-        child.nodeType === ELEMENT_NODE ||
-        trim.call(child.textContent).length !== 0
-      ) {
-        content.push(child);
-      }
-    }
-    return content.length === 1 ? content[0] : content;
-  }
-
-  // just a minifier friendly indirection
-  function createDocumentFragment(document) {
-    return document.createDocumentFragment();
-  }
-
-  // given a node, inject some html and return
-  // the resulting template document fragment
-  function createFragment(node, html) {
-    IEAttributes = [];
-    return (
-      OWNER_SVG_ELEMENT in node ?
-        createSVGFragment :
-        createHTMLFragment
-    )(node, html.replace(no, comments));
-  }
-
-  // create fragment for HTML
-  function createHTMLFragment(node, html) {
-    var fragment;
-    var document = node.ownerDocument;
-    var container = document.createElement('template');
-    var hasContent = 'content' in container;
-    var needsTableWrap = false;
-    if (!hasContent) {
-      // DO NOT MOVE THE FOLLOWING LINE ELSEWHERE
-      fragment = createDocumentFragment(document);
-      // (a jsdom + nodejs tests coverage gotcha)
-
-      // el.innerHTML = '<td></td>'; is not possible
-      // if the content is a partial internal table content
-      // it needs to be wrapped around once injected.
-      // HTMLTemplateElement does not suffer this issue.
-      needsTableWrap = /^[^\S]*?<(t(?:head|body|foot|r|d|h))/i.test(html);
-    }
-    if (needsTableWrap) {
-      // secure the RegExp.$1 result ASAP to avoid issues
-      // in case a non-browser DOM library uses RegExp internally
-      // when HTML content is injected (basicHTML / jsdom / others...)
-      var selector = RegExp.$1;
-      container.innerHTML = '<table>' + html + '</table>';
-      appendNodes(fragment, slice.call(container.querySelectorAll(selector)));
-    } else {
-      container.innerHTML = html;
-      if (hasContent) {
-        fragment = container.content;
-      } else {
-        appendNodes(fragment, slice.call(container.childNodes));
-      }
-    }
-    return fragment;
-  }
-
-  // create a fragment for SVG
-  function createSVGFragment(node, html) {
-    var document = node.ownerDocument;
-    var fragment = createDocumentFragment(document);
-    if (IE || WK) {
-      var container = document.createElement('div');
-      container.innerHTML = '<svg xmlns="' + SVG_NAMESPACE + '">' + html + '</svg>';
-      appendNodes(fragment, slice.call(container.firstChild.childNodes));
-    } else {
-      var container = document.createElementNS(SVG_NAMESPACE, 'svg');
-      container.innerHTML = html;
-      appendNodes(fragment, slice.call(container.childNodes));
-    }
-    return fragment;
-  }
-
-  // given a node, it does what is says
-  function createText(node, text) {
-    return node.ownerDocument.createTextNode(text);
-  }
-
-  // given an info, tries to find out the best option
-  // to replace or update the content
-  function discoverNode(parentNode, virtual, info, childNodes) {
-    for (var
-      target = parentNode,
-      document = parentNode.ownerDocument,
-      path = info.path,
-      virtualNode = getNode(virtual, path),
-      i = 0,
-      length = path.length;
-      i < length; i++
-    ) {
-      switch (path[i++]) {
-        case 'attributes':
-          var name = virtualNode.name;
-          if (!parentNode.hasAttribute(name)) {
-            parentNode.setAttribute(name, '');
-          }
-          target = parentNode.attributes[name];
-          break;
-        case 'childNodes':
-          var children = getChildren(parentNode);
-          var virtualChildren = getChildren(virtualNode.parentNode);
-          target = previousElementSibling(virtualNode);
-          var before = target ? (path.indexOf.call(virtualChildren, target) + 1) : -1;
-          target = nextElementSibling(virtualNode);
-          var after = target ? path.indexOf.call(virtualChildren, target) : -1;
-          target = document.createComment(UID);
-          switch (true) {
-            // `${'virtual'}` is actually resolved as `${'any'}`
-            // case before < 0 && after < 0: before = 0;
-
-            // `</a>${'virtual'}`
-            case after < 0:
-              after = children.length;
-              break;
-            // `${'virtual'}<b>`
-            case before < 0:
-              before = 0;
-            // `</a>${'virtual'}<b>`
-            default:
-              after = -(virtualChildren.length - after);
-              break;
-          }
-          childNodes.push.apply(
-            childNodes,
-            slice.call(children, before, after)
-          );
-          if (childNodes.length) {
-            insertBefore(
-              parentNode,
-              target,
-              nextElementSibling(childNodes[childNodes.length - 1])
-            );
-          } else {
-            insertBefore(
-              parentNode,
-              target,
-              slice.call(children, after)[0]
-            );
-          }
-          if (childNodes.length === 0) {
-            removePreviousText(parentNode, target);
-          }
-          break;
-        default:
-          // if the node is not there, create it
-          target = getChildren(parentNode)[path[i]] ||
-                    parentNode.appendChild(
-                      parentNode.ownerDocument.createElement(
-                        getNode(virtual, path.slice(0, i + 1)).nodeName
-                      )
-                    );
-          parentNode = target;
-          break;
-      }
-    }
-    return target;
-  }
-
-  function insertBefore(parentNode, target, after) {
-    if (after) {
-      parentNode.insertBefore(target, after);
-    } else {
-      parentNode.appendChild(target);
-    }
-  }
-
-  // create an empty fragment from a generic node
-  function emptyFragment(node) {
-    return createDocumentFragment(node.ownerDocument);
-  }
-
-  // use a placeholder and resolve with the right callback
-  function invokeAtDistance(callback, value) {
-    callback(value.placeholder);
-    if ('text' in value) {
-      Promise.resolve(value.text).then(String).then(callback);
-    } else if ('any' in value) {
-      Promise.resolve(value.any).then(callback);
-    } else if ('html' in value) {
-      Promise.resolve(value.html).then(asHTML).then(callback);
-    } else {
-      Promise.resolve(invokeTransformer(value)).then(callback);
-    }
-  }
-
-  // last attempt to transform content
-  function invokeTransformer(object) {
-    for (var key in transformers) {
-      if (object.hasOwnProperty(key)) {
-        return transformers[key](object[key]);
-      }
-    }
-  }
-
-  // quick and dirty Node check
-  function isNode_ish(value) {
-    return 'ELEMENT_NODE' in value;
-  }
-
-  // quick and dirty Promise check
-  function isPromise_ish(value) {
-    return value != null && 'then' in value;
-  }
-
-  // given a node and a direction
-  // returns true if there's no content
-  function noContent(node, direction) {
-    while (
-      ((node = node[direction + 'Sibling']) != null) &&
-      node.nodeType === TEXT_NODE &&
-      trim.call(node.textContent).length < 1
-    );
-    return node == null;
-  }
-
-  // remove a list of [node, attribute]
-  function removeAttributeList(list) {
-    for (var i = 0, length = list.length; i < length; i++) {
-      list[i++].removeAttribute(list[i]);
-    }
-  }
-
-  // remove all text nodes from a virtual space
-  function removePreviousText(parentNode, node) {
-    var previousSibling = node.previousSibling;
-    if (previousSibling && previousSibling.nodeType === TEXT_NODE) {
-      parentNode.removeChild(previousSibling);
-      removePreviousText(parentNode, node);
-    }
-  }
-
-  // specify the content to update
-  function setContent(type, target, removeAttributes, childNodes) {
-    var update;
-    switch (type) {
-      case 'any':
-        update = setVirtualContent(target, null);
-        break;
-      case 'attr':
-        update = setAttribute(target, removeAttributes);
-        break;
-      case 'virtual':
-        update = setVirtualContent(target, childNodes);
-        break;
-    }
-    return update;
-  }
-
-  // update partially or fully the list of virtual nodes
-  // it modifies in place the childNodes list if necessary
-  function updateVirtualNodes(node, childNodes, value) {
-    var i = indexOfDifferences(childNodes, value);
-    if (i !== -1) {
-      var fragment = emptyFragment(node);
-      removeNodeList(childNodes, i);
-      childNodes.splice(i);
-      value = value.slice(i);
-      appendNodes(fragment, value);
-      node.parentNode.insertBefore(fragment, node);
-      childNodes.push.apply(childNodes, value);
-    }
-  }
-
-  // used for common path creation.
-  function Path(type, node) {
-    return {type: type, path: createPath(node)};
-  }
-
-  // ---------------------------------------------
-  // Hybrid Shims
-  // ---------------------------------------------
-
-  // WeakMap with partial EXPANDO fallback
-  var $WeakMap = typeof WeakMap === typeof $WeakMap ?
-      function () {
-        return {
-          get: function (obj) { return obj[EXPANDO]; },
-          set: function (obj, value) {
-            Object.defineProperty(obj, EXPANDO, {
-              configurable: true,
-              value: value
-            });
-          }
-        };
-      } :
-      WeakMap;
-
-  // Map with partial double Array fallback
-  var $Map = typeof Map === typeof $Map ?
-      function () {
-        var k = [], v = [];
-        return {
-          get: function (obj) {
-            return v[k.indexOf(obj)];
-          },
-          // being used with unique template literals
-          // there is never a case when a value is overwritten
-          // no need to check upfront for the indexOf
-          set: function (obj, value) {
-            v[k.push(obj) - 1] = value;
-          }
-        };
-      } :
-      Map;
-
-  // TODO: which browser needs these partial polyfills here?
-
-  // BB7 and webOS need this
-  var isArray = Array.isArray ||
-                (function () {
-                  var toString = {}.toString;
-                  // I once had an engine returning [array Array]
-                  // and I've got scared since!
-                  var s = toString.call([]);
-                  return function (a) {
-                    return toString.call(a) === s;
-                  };
-                }());
-
-  // older WebKit need this
-  var trim = EXPANDO.trim ||
-              function () { return this.replace(/^\s+|\s+$/g, ''); };
-
-  // ---------------------------------------------
-  // Shared variables
-  // ---------------------------------------------
-
-  // transformers registry
-  var transformers = {};
-
-  // normalize Firefox issue with template literals
-  var templateObjects, unique;
-  if (FF) {
-    templateObjects = {};
-    unique = function (template) {
-      var key = '_' + template.join(UIDC);
-      return templateObjects[key] ||
-            (templateObjects[key] = template);
-    };
-  }
-
-  // use native .append(...childNodes) where available
-  var appendNodes = 'append' in featureFragment ?
-      function (node, childNodes) {
-        node.append.apply(node, childNodes);
-      } :
-      function appendNodes(node, childNodes) {
-        for (var
-          i = 0,
-          length = childNodes.length;
-          i < length; i++
-        ) {
-          node.appendChild(childNodes[i]);
-        }
-      };
-
-  // redefine bind to always point at hyperHTML
-  // (useful in destructuring)
-  hyperHTML.bind = function (context) {
-    return function () {
-      return hyperHTML.apply(context, arguments);
-    };
-  };
-
-  // returns children or retrieve them in IE/Edge
-  var getChildren = WK || IE ?
-      function (node) {
-        for (var
-          child,
-          children = [],
-          childNodes = node.childNodes,
-          j = 0, i = 0, length = childNodes.length;
-          i < length; i++
-        ) {
-          child = childNodes[i];
-          if (child.nodeType === ELEMENT_NODE)
-            children[j++] = child;
-        }
-        return children;
-      } :
-      function (node) { return node.children; };
-
-  // return the correct node walking through a path
-  // fixes IE/Edge issues with attributes and children (fixes old WebKit too)
-  var getNode = IE || WK ?
-      function (parentNode, path) {
-        for (var name, i = 0, length = path.length; i < length; i++) {
-          name = path[i++];
-          switch (name) {
-            case 'children':
-              parentNode = getChildren(parentNode)[path[i]];
-              break;
-            default:
-              parentNode = parentNode[name][path[i]];
-              break;
-          }
-        }
-        return parentNode;
-      } :
-      function (parentNode, path) {
-        for (var i = 0, length = path.length; i < length; i++) {
-          parentNode = parentNode[path[i++]][path[i]];
-        }
-        return parentNode;
-      };
-
-  // fixes IE problems with comments and sanitizes other browsers
-  var IEAttributes;
-  var no = new RegExp('(<[a-z]+[a-z0-9:_-]*)((?:[^\\S]+[a-z0-9:_-]+(?:=(?:\'.*?\'|".*?"|<.+?>|\\S+))?)+)([^\\S]*/?>)', 'g');
-  var findAttributes = new RegExp('([^\\S][a-z]+[a-z0-9:_-]*=)([\'"]?)' + UIDC + '\\2', 'g');
-  var comments = function ($0, $1, $2, $3) {
-    return $1 + $2.replace(
-      findAttributes,
-      IE ?
-        function ($0, $1, $2) {
-          IEAttributes.push($1.slice(1, -1));
-          return replaceAttributes($0, $1, $2);
-        } :
-        replaceAttributes
-    ) + $3;
-  };
-  
-  var replaceAttributes = function ($0, $1, $2) {
-    return $1 + ($2 || '"') + UID + ($2 || '"');
-  };
-
-  // IE/Edge gotcha with comment nodes
-  var nextElementSibling = IE ?
-    function (node) {
-      while (node = node.nextSibling) {
-        if (node.nodeType === ELEMENT_NODE) return node;
-      }
-      return undefined;
-    } :
-    function (node) { return node.nextElementSibling; };
-
-  var previousElementSibling = IE ?
-    function (node) {
-      while (node = node.previousSibling) {
-        if (node.nodeType === ELEMENT_NODE) return node;
-      }
-      return undefined;
-    } :
-    function (node) { return node.previousElementSibling; };
-
-  // [element] = {template, updates};
-  var hypers = new $WeakMap;
-
-  // [element] = {template, updates};
-  var wires = new $WeakMap;
-
-  // [template] = {fragment, paths};
-  var templates = new $Map;
-
-  // internal signal to switch adoption
-  var notAdopting = true;
-
-  // IE 11 has problems with cloning templates too
-  // it "forgets" empty childNodes
-  var cloneNode = (function () {
-    featureFragment.appendChild(createText(featureFragment, 'g'));
-    featureFragment.appendChild(createText(featureFragment, ''));
-    return featureFragment.cloneNode(true).childNodes.length === 1 ?
-      function (node) {
-        for (var
-          clone = node.cloneNode(),
-          childNodes = node.childNodes || [],
-          i = 0, length = childNodes.length;
-          i < length; i++
-        ) {
-          clone.appendChild(cloneNode(childNodes[i]));
-        }
-        return clone;
-      } :
-      function (fragment) {
-        return fragment.cloneNode(true);
-      };
-  }());
-
-  // ---------------------------------------------
-  // Template related utilities
-  // ---------------------------------------------
-
-  // given a unique template object
-  // create, parse, and store retrieved info
-  function createTemplate(template) {
-    var paths = [];
-    var fragment = createFragment(this, template.join(UIDC));
-    var info = {fragment: fragment, paths: paths};
-    hyperSeeker(fragment, paths);
-    templates.set(template, info);
-    return info;
-  }
-
-  // given a generic node, returns a path capable
-  // of retrieving such path back again.
-  // TODO: worth passing the index when available ?
-  function createPath(node) {
-    var path = [];
-    var parentNode;
-    switch(node.nodeType) {
-      case ELEMENT_NODE:
-      case DOCUMENT_FRAGMENT_NODE:
-        parentNode = node;
-        break;
-      case COMMENT_NODE:
-        parentNode = node.parentNode;
-        path.unshift(
-          'childNodes',
-          path.indexOf.call(parentNode.childNodes, node)
-        );
-        break;
-      case ATTRIBUTE_NODE:
-      default: // jsdom here does not provide a nodeType 2 ...
-        parentNode = node.ownerElement;
-        path.unshift('attributes', node.name);
-        break;
-    }
-    for (
-      node = parentNode;
-      parentNode = parentNode.parentNode;
-      node = parentNode
-    ) {
-      path.unshift('children', path.indexOf.call(getChildren(parentNode), node));
-    }
-    return path;
-  }
-
-  // given a root node and a list of paths
-  // creates an array of updates to invoke
-  // whenever the next interpolation happens
-  function createUpdates(fragment, paths) {
-    for (var
-      info, target,
-      updates = [],
-      removeAttributes = [],
-      i = 0, length = paths.length;
-      i < length; i++
-    ) {
-      info = paths[i];
-      target = getNode(fragment, info.path);
-      if (target.nodeType === DOCUMENT_FRAGMENT_NODE) {
-        removeNodeList(target.childNodes, 0);
-        target = this;
-      }
-      updates[i] = setContent(info.type, target, removeAttributes, []);
-    }
-    removeAttributeList(removeAttributes);
-    return updates;
-  }
-
-  // like createUpdates but for nodes with already a content
-  function discoverUpdates(fragment, paths) {
-    for (var
-      info, childNodes,
-      updates = [],
-      removeAttributes = [],
-      i = 0, length = paths.length;
-      i < length; i++
-    ) {
-      childNodes = [];
-      info = paths[i];
-      updates[i] = setContent(
-        info.type,
-        discoverNode(this, fragment, info, childNodes),
-        removeAttributes,
-        childNodes
-      );
-    }
-    removeAttributeList(removeAttributes);
-    return updates;
-  }
-
-  // invokes each update function passing interpolated value
-  function update() {
-    for (var i = 1, length = arguments.length; i < length; i++) {
-      this[i - 1](arguments[i]);
-    }
-  }
-
-  // create a template, if unknown
-  // upgrade a node to use such template for future updates
-  function upgrade(template) {
-    if (FF) template = unique(template);
-    var updates;
-    var info =  templates.get(template) ||
-                createTemplate.call(this, template);
-    if (notAdopting) {
-      var fragment = cloneNode(info.fragment);
-      updates = createUpdates.call(this, fragment, info.paths);
-      resetAndPopulate(this, fragment);
-    } else {
-      updates = discoverUpdates.call(this, info.fragment, info.paths);
-    }
-    return {template: template, updates: updates};
-  }
-
-  // ---------------------------------------------
-  // Wires
-  // ---------------------------------------------
-
-  // create a new wire for generic DOM content
-  function wireContent(type) {
-    var adopter, content, container, fragment, render, setup, template;
-
-    function before(document) {
-      fragment = createDocumentFragment(document);
-      container = type === 'svg' ?
-        document.createElementNS(SVG_NAMESPACE, 'svg') :
-        fragment;
-      render = hyperHTML.bind(container);
-    }
-
-    function after() {
-      if (setup) {
-        setup = false;
-        if (type === 'svg') {
-          appendNodes(fragment, slice.call(container.childNodes));
-        }
-        content = createContent(fragment);
-      }
-      return content;
-    }
-
-    return type === 'adopt' ?
-      function adopt(statics) {
-        var args = arguments;
-        if (FF) statics = unique(statics);
-        if (template !== statics) {
-          setup = true;
-          template = statics;
-          adopter = function (parentNode, children, i) {
-            if (setup) {
-              if (i < children.length) {
-                container = children[i];
-                fragment = {
-                  ownerDocument: container.ownerDocument,
-                  childNodes: [container],
-                  children: [container]
-                };
-                render = hyperHTML.adopt(fragment);
-              } else {
-                if (OWNER_SVG_ELEMENT in parentNode) type = 'svg';
-                before(parentNode.ownerDocument);
-              }
-            }
-            render.apply(null, args);
-            return after();
-          };
-        }
-        return adopter;
-      } :
-      function update(statics) {
-        if (FF) statics = unique(statics);
-        if (template !== statics) {
-          setup = true;
-          template = statics;
-          before(hyperHTML.document);
-        }
-        render.apply(null, arguments);
-        return after();
-      };
-  }
-
-  // setup a weak reference if needed and return a wire by ID
-  function wireWeakly(obj, type) {
-    var wire = wires.get(obj);
-    var i = type.indexOf(':');
-    var id = type;
-    if (-1 < i) {
-      id = type.slice(i + 1);
-      type = type.slice(0, i) || 'html';
-    }
-    if (!wire) {
-      wire = {};
-      wires.set(obj, wire);
-    }
-    return wire[id] || (wire[id] = wireContent(type));
-  }
-
-  // ---------------------------------------------
-  // ⚡️ ️️The End ➰
-  // ---------------------------------------------
-  return hyperHTML;
-
-}(document));
-
-// umd.KISS
-try { module.exports = hyperHTML; } catch(o_O) {}
+        )
+      )) :
+    ('raw' in HTML ?
+      __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__hyper_wire_js__["b" /* content */])('html') : __WEBPACK_IMPORTED_MODULE_3__hyper_wire_js__["a" /* default */]
+    ).apply(null, arguments);
+}
 
 
 /***/ }),
-/* 9 */
+/* 17 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_date_fns_set_minutes__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_date_fns_set_minutes__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_date_fns_set_minutes___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_date_fns_set_minutes__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_date_fns_add_seconds__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_date_fns_add_seconds__ = __webpack_require__(7);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_date_fns_add_seconds___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_date_fns_add_seconds__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_date_fns_sub_seconds__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_date_fns_sub_seconds__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_date_fns_sub_seconds___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_date_fns_sub_seconds__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_date_fns_format__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_date_fns_format__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_date_fns_format___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_date_fns_format__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_hyperhtml__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_hyperhtml___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_hyperhtml__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_hyperhtml_esm__ = __webpack_require__(16);
 
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -2138,7 +1813,7 @@ var FlipClock = function (_CustomElement2) {
     _this.time = '000000';
     _this.timer = null;
     _this.isRunning = false;
-    _this.html = __WEBPACK_IMPORTED_MODULE_4_hyperhtml___default.a.bind(_this.attachShadow({ mode: 'open' }));
+    _this.html = __WEBPACK_IMPORTED_MODULE_4_hyperhtml_esm__["a" /* hyper */].bind(_this.attachShadow({ mode: 'open' }));
     _this.startCount = _this.startCount.bind(_this);
     _this.stopCount = _this.stopCount.bind(_this);
     _this.resetCount = _this.resetCount.bind(_this);
@@ -2242,10 +1917,10 @@ var FlipClock = function (_CustomElement2) {
 customElements.define('flip-clock', FlipClock);
 
 /***/ }),
-/* 10 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var startOfDay = __webpack_require__(18)
+var startOfDay = __webpack_require__(26)
 
 var MILLISECONDS_IN_MINUTE = 60000
 var MILLISECONDS_IN_DAY = 86400000
@@ -2289,12 +1964,12 @@ module.exports = differenceInCalendarDays
 
 
 /***/ }),
-/* 11 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
-var startOfYear = __webpack_require__(21)
-var differenceInCalendarDays = __webpack_require__(10)
+var startOfYear = __webpack_require__(29)
+var differenceInCalendarDays = __webpack_require__(18)
 
 /**
  * @category Day Helpers
@@ -2322,12 +1997,12 @@ module.exports = getDayOfYear
 
 
 /***/ }),
-/* 12 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
-var startOfISOWeek = __webpack_require__(1)
-var startOfISOYear = __webpack_require__(19)
+var startOfISOWeek = __webpack_require__(4)
+var startOfISOYear = __webpack_require__(27)
 
 var MILLISECONDS_IN_WEEK = 604800000
 
@@ -2362,10 +2037,10 @@ module.exports = getISOWeek
 
 
 /***/ }),
-/* 13 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isDate = __webpack_require__(4)
+var isDate = __webpack_require__(9)
 
 /**
  * @category Common Helpers
@@ -2403,7 +2078,7 @@ module.exports = isValid
 
 
 /***/ }),
-/* 14 */
+/* 22 */
 /***/ (function(module, exports) {
 
 var commonFormatterKeys = [
@@ -2437,7 +2112,7 @@ module.exports = buildFormattingTokensRegExp
 
 
 /***/ }),
-/* 15 */
+/* 23 */
 /***/ (function(module, exports) {
 
 function buildDistanceInWordsLocale () {
@@ -2542,10 +2217,10 @@ module.exports = buildDistanceInWordsLocale
 
 
 /***/ }),
-/* 16 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var buildFormattingTokensRegExp = __webpack_require__(14)
+var buildFormattingTokensRegExp = __webpack_require__(22)
 
 function buildFormatLocale () {
   // Note: in English, the names of days of the week and months are capitalized.
@@ -2636,11 +2311,11 @@ module.exports = buildFormatLocale
 
 
 /***/ }),
-/* 17 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var buildDistanceInWordsLocale = __webpack_require__(15)
-var buildFormatLocale = __webpack_require__(16)
+var buildDistanceInWordsLocale = __webpack_require__(23)
+var buildFormatLocale = __webpack_require__(24)
 
 /**
  * @category Locales
@@ -2653,7 +2328,7 @@ module.exports = {
 
 
 /***/ }),
-/* 18 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
@@ -2684,11 +2359,11 @@ module.exports = startOfDay
 
 
 /***/ }),
-/* 19 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getISOYear = __webpack_require__(3)
-var startOfISOWeek = __webpack_require__(1)
+var getISOYear = __webpack_require__(8)
+var startOfISOWeek = __webpack_require__(4)
 
 /**
  * @category ISO Week-Numbering Year Helpers
@@ -2722,7 +2397,7 @@ module.exports = startOfISOYear
 
 
 /***/ }),
-/* 20 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
@@ -2766,7 +2441,7 @@ module.exports = startOfWeek
 
 
 /***/ }),
-/* 21 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var parse = __webpack_require__(0)
@@ -2796,6 +2471,798 @@ function startOfYear (dirtyDate) {
 }
 
 module.exports = startOfYear
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shared_poorlyfills_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shared_easy_dom_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__shared_utils_js__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__render_js__ = __webpack_require__(11);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return content; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return weakly; });
+
+
+
+
+
+
+// all wires used per each context
+const wires = new __WEBPACK_IMPORTED_MODULE_1__shared_poorlyfills_js__["a" /* WeakMap */];
+
+// A wire is a callback used as tag function
+// to lazily relate a generic object to a template literal.
+// hyper.wire(user)`<div id=user>${user.name}</div>`; => the div#user
+// This provides the ability to have a unique DOM structure
+// related to a unique JS object through a reusable template literal.
+// A wire can specify a type, as svg or html, and also an id
+// via html:id or :id convention. Such :id allows same JS objects
+// to be associated to different DOM structures accordingly with
+// the used template literal without losing previously rendered parts.
+const wire = (obj, type) => obj == null ?
+  content(type || 'html') :
+  weakly(obj, type || 'html');
+
+// A wire content is a virtual reference to one or more nodes.
+// It's represented by either a DOM node, or an Array.
+// In both cases, the wire content role is to simply update
+// all nodes through the list of related callbacks.
+// In few words, a wire content is like an invisible parent node
+// in charge of updating its content like a bound element would do.
+const content = type => {
+  let wire, container, content, template, updates;
+  return function (statics) {
+    statics = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__shared_utils_js__["a" /* unique */])(statics);
+    let setup = template !== statics;
+    if (setup) {
+      template = statics;
+      content = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__shared_easy_dom_js__["a" /* fragment */])(document);
+      container = type === 'svg' ?
+        document.createElementNS(__WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["a" /* SVG_NAMESPACE */], 'svg') :
+        content;
+      updates = __WEBPACK_IMPORTED_MODULE_4__render_js__["a" /* default */].bind(container);
+    }
+    updates.apply(null, arguments);
+    if (setup) {
+      if (type === 'svg') {
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__shared_utils_js__["b" /* append */])(content, __WEBPACK_IMPORTED_MODULE_3__shared_utils_js__["c" /* slice */].call(container.childNodes));
+      }
+      wire = wireContent(content);
+    }
+    return wire;
+  };
+};
+
+// wires are weakly created through objects.
+// Each object can have multiple wires associated
+// and this is thanks to the type + :id feature.
+const weakly = (obj, type) => {
+  const i = type.indexOf(':');
+  let wire = wires.get(obj);
+  let id = type;
+  if (-1 < i) {
+    id = type.slice(i + 1);
+    type = type.slice(0, i) || 'html';
+  }
+  if (!wire) wires.set(obj, wire = {});
+  return wire[id] || (wire[id] = content(type));
+};
+
+// a document fragment loses its nodes as soon
+// as it's appended into another node.
+// This would easily lose wired content
+// so that on a second render call, the parent
+// node wouldn't know which node was there
+// associated to the interpolation.
+// To prevent hyperHTML to forget about wired nodes,
+// these are either returned as Array or, if there's ony one entry,
+// as single referenced node that won't disappear from the fragment.
+// The initial fragment, at this point, would be used as unique reference.
+const wireContent = node => {
+  const childNodes = node.childNodes;
+  const length = childNodes.length;
+  const wire = [];
+  for (let i = 0; i < length; i++) {
+    let child = childNodes[i];
+    if (
+      child.nodeType === __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["b" /* ELEMENT_NODE */] ||
+      __WEBPACK_IMPORTED_MODULE_1__shared_poorlyfills_js__["b" /* trim */].call(child.textContent).length !== 0
+    ) {
+      wire.push(child);
+    }
+  }
+  return wire.length === 1 ? wire[0] : wire;
+};
+
+
+/* harmony default export */ __webpack_exports__["a"] = (wire);
+
+
+/***/ }),
+/* 31 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__ = __webpack_require__(3);
+
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  update: (
+    utils, parentNode, commentNode,
+    liveNodes, liveStart, liveEnd, liveLength,
+    virtualNodes, virtualStart, virtualEnd /*, virtualLength */
+  ) => {
+    while (liveStart < liveEnd && virtualStart < virtualEnd) {
+      const liveValue = liveNodes[liveStart];
+      const virtualValue = virtualNodes[virtualStart];
+      const status = liveValue === virtualValue ?
+                      0 : (liveNodes.indexOf(virtualValue) < 0 ? 1 : -1);
+      // nodes can be either removed ...
+      if (status < 0) {
+        __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["d" /* splice */].call(liveNodes, liveStart, 1);
+        parentNode.removeChild(utils.getNode(liveValue));
+        liveEnd--;
+        liveLength--;
+      }
+      // ... appended ...
+      else if (0 < status) {
+        __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["d" /* splice */].call(liveNodes, liveStart, 0, virtualValue);
+        parentNode.insertBefore(utils.getNode(virtualValue), utils.getNode(liveValue));
+        liveStart++;
+        liveEnd++;
+        liveLength++;
+        virtualStart++;
+      }
+      // ... or ignored, since it's the same ...
+      else {
+        liveStart++;
+        virtualStart++;
+      }
+    }
+    if (liveStart < liveEnd) {
+      const remove = __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["d" /* splice */].call(liveNodes, liveStart, liveEnd - liveStart);
+      liveStart = remove.length;
+      while (liveStart--) {
+        parentNode.removeChild(utils.getNode(remove[liveStart]));
+      }
+    }
+    if (virtualStart < virtualEnd) {
+      __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["d" /* splice */].apply(
+        liveNodes,
+        [liveEnd, 0].concat(
+          utils.insert(
+            parentNode,
+            __WEBPACK_IMPORTED_MODULE_0__shared_utils_js__["c" /* slice */].call(virtualNodes, virtualStart, virtualEnd),
+            liveEnd < liveLength ?
+              utils.getNode(liveNodes[liveEnd]) : commentNode
+          )
+        )
+      );
+    }
+  }
+});
+
+/***/ }),
+/* 32 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__ = __webpack_require__(1);
+
+
+// every template literal interpolation indicates
+// a precise target in the DOM the template is representing.
+// `<p id=${'attribute'}>some ${'content'}</p>`
+// hyperHTML finds only once per template literal,
+// hence once per entire application life-cycle,
+// all nodes that are related to interpolations.
+// These nodes are stored as indexes used to retrieve,
+// once per upgrade, nodes that will change on each future update.
+// A path example is [2, 0, 1] representing the operation:
+// node.childNodes[2].childNodes[0].childNodes[1]
+// Attributes are addressed via their owner node and their name.
+const createPath = node => {
+  const path = [];
+  let parentNode;
+  switch (node.nodeType) {
+    case __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["b" /* ELEMENT_NODE */]:
+    case __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["j" /* DOCUMENT_FRAGMENT_NODE */]:
+      parentNode = node;
+      break;
+    case __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["g" /* COMMENT_NODE */]:
+      parentNode = node.parentNode;
+      prepend(path, parentNode, node);
+      break;
+    default:
+      parentNode = node.ownerElement;
+      break;
+  }
+  for (
+    node = parentNode;
+    (parentNode = parentNode.parentNode);
+    node = parentNode
+  ) {
+    prepend(path, parentNode, node);
+  }
+  return path;
+};
+
+const prepend = (path, parent, node) => {
+  path.unshift(path.indexOf.call(parent.childNodes, node));
+};
+
+/* harmony default export */ __webpack_exports__["a"] = ({
+  create: (type, node, name) => ({type, name, node, path: createPath(node)}),
+  find: (node, path) => {
+    const length = path.length;
+    for (let i = 0; i < length; i++) {
+      node = node.childNodes[path[i]];
+    }
+    return node;
+  }
+});
+
+
+/***/ }),
+/* 33 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+// from https://github.com/developit/preact/blob/33fc697ac11762a1cb6e71e9847670d047af7ce5/src/constants.js
+const IS_NON_DIMENSIONAL = /acit|ex(?:s|g|n|p|$)|rph|ows|mnc|ntw|ine[ch]|zoo|^ord/i;
+
+// style is handled as both string and object
+// even if the target is an SVG element (consistency)
+/* harmony default export */ __webpack_exports__["a"] = ((node, original, isSVG) => {
+  if (isSVG) {
+    const style = original.cloneNode(true);
+    style.value = '';
+    node.setAttributeNode(style);
+    return update(style, isSVG);
+  }
+  return update(node.style, isSVG);
+});
+
+// the update takes care or changing/replacing
+// only properties that are different or
+// in case of string, the whole node
+const update = (style, isSVG) => {
+  let oldType, oldValue;
+  return newValue => {
+    switch (typeof newValue) {
+      case 'object':
+        if (newValue) {
+          if (oldType === 'object') {
+            if (!isSVG) {
+              if (oldValue !== newValue) {
+                for (const key in oldValue) {
+                  if (!(key in newValue)) {
+                    style[key] = '';
+                  }
+                }
+              }
+            }
+          } else {
+            if (isSVG) style.value = '';
+            else style.cssText = '';
+          }
+          const info = isSVG ? {} : style;
+          for (const key in newValue) {
+            const value = newValue[key];
+            info[key] = typeof value === 'number' &&
+                        !IS_NON_DIMENSIONAL.test(key) ?
+                          (value + 'px') : value;
+          }
+          oldType = 'object';
+          if (isSVG) style.value = toStyle((oldValue = info));
+          else oldValue = newValue;
+          break;
+        }
+      default:
+        if (oldValue != newValue) {
+          oldType = 'string';
+          oldValue = newValue;
+          if (isSVG) style.value = newValue || '';
+          else style.cssText = newValue || '';
+        }
+        break;
+    }
+  };
+};
+
+const hyphen = /([^A-Z])([A-Z]+)/g;
+const ized = ($0, $1, $2) => $1 + '-' + $2.toLowerCase();
+const toStyle = object => {
+  const css = [];
+  for (const key in object) {
+    css.push(key.replace(hyphen, ized), ':', object[key], ';');
+  }
+  return css.join('');
+};
+
+/***/ }),
+/* 34 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__classes_Megatron_js__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__classes_Component_js__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Path_js__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__Style_js__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Intent_js__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__shared_easy_dom_js__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__shared_poorlyfills_js__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__shared_utils_js__ = __webpack_require__(3);
+
+
+
+
+
+
+
+
+
+
+
+// hyper.Component have a connected/disconnected
+// mechanism provided by MutationObserver
+// This weak set is used to recognize components
+// as DOM node that needs to trigger connected/disconnected events
+const components = new __WEBPACK_IMPORTED_MODULE_7__shared_poorlyfills_js__["d" /* WeakSet */];
+
+// a basic dictionary used to filter already cached attributes
+// while looking for special hyperHTML values.
+function Cache() {}
+Cache.prototype = Object.create(null);
+
+// returns an intent to explicitly inject content as html
+const asHTML = html => ({html});
+
+// updates are created once per context upgrade
+// within the main render function (../hyper/render.js)
+// These are an Array of callbacks to invoke passing
+// each interpolation value.
+// Updates can be related to any kind of content,
+// attributes, or special text-only cases such <style>
+// elements or <textarea>
+const create = (root, paths) => {
+  const updates = [];
+  const length = paths.length;
+  for (let i = 0; i < length; i++) {
+    const info = paths[i];
+    const node = __WEBPACK_IMPORTED_MODULE_3__Path_js__["a" /* default */].find(root, info.path);
+    switch (info.type) {
+      case 'any':
+        updates.push(setAnyContent(node, []));
+        break;
+      case 'attr':
+        updates.push(setAttribute(node, info.name, info.node));
+        break;
+      case 'text':
+        updates.push(setTextContent(node));
+        break;
+    }
+  }
+  return updates;
+};
+
+// finding all paths is a one-off operation performed
+// when a new template literal is used.
+// The goal is to map all target nodes that will be
+// used to update content/attributes every time
+// the same template literal is used to create content.
+// The result is a list of paths related to the template
+// with all the necessary info to create updates as
+// list of callbacks that target directly affected nodes.
+const find = (node, paths, parts) => {
+  const childNodes = node.childNodes;
+  const length = childNodes.length;
+  for (let i = 0; i < length; i++) {
+    let child = childNodes[i];
+    switch (child.nodeType) {
+      case __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["b" /* ELEMENT_NODE */]:
+        findAttributes(child, paths, parts);
+        find(child, paths, parts);
+        break;
+      case __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["g" /* COMMENT_NODE */]:
+        if (child.textContent === __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["d" /* UID */]) {
+          parts.shift();
+          paths.push(
+            // basicHTML or other non standard engines
+            // might end up having comments in nodes
+            // where they shouldn't, hence this check.
+            __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["h" /* SHOULD_USE_TEXT_CONTENT */].test(node.nodeName) ?
+              __WEBPACK_IMPORTED_MODULE_3__Path_js__["a" /* default */].create('text', node) :
+              __WEBPACK_IMPORTED_MODULE_3__Path_js__["a" /* default */].create('any', child)
+          );
+        }
+        break;
+      case __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["i" /* TEXT_NODE */]:
+        // the following ignore is actually covered by browsers
+        // only basicHTML ends up on previous COMMENT_NODE case
+        // instead of TEXT_NODE because it knows nothing about
+        // special style or textarea behavior
+        /* istanbul ignore if */
+        if (
+          __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["h" /* SHOULD_USE_TEXT_CONTENT */].test(node.nodeName) &&
+          __WEBPACK_IMPORTED_MODULE_7__shared_poorlyfills_js__["b" /* trim */].call(child.textContent) === __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["e" /* UIDC */]
+        ) {
+          parts.shift();
+          paths.push(__WEBPACK_IMPORTED_MODULE_3__Path_js__["a" /* default */].create('text', node));
+        }
+        break;
+    }
+  }
+};
+
+// attributes are searched via unique hyperHTML id value.
+// Despite HTML being case insensitive, hyperHTML is able
+// to recognize attributes by name in a caseSensitive way.
+// This plays well with Custom Elements definitions
+// and also with XML-like environments, without trusting
+// the resulting DOM but the template literal as the source of truth.
+// IE/Edge has a funny bug with attributes and these might be duplicated.
+// This is why there is a cache in charge of being sure no duplicated
+// attributes are ever considered in future updates.
+const findAttributes = (node, paths, parts) => {
+  const cache = new Cache;
+  const attributes = node.attributes;
+  const array = __WEBPACK_IMPORTED_MODULE_8__shared_utils_js__["c" /* slice */].call(attributes);
+  const remove = [];
+  const length = array.length;
+  for (let i = 0; i < length; i++) {
+    const attribute = array[i];
+    if (attribute.value === __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["d" /* UID */]) {
+      const name = attribute.name;
+      // the following ignore is covered by IE
+      // and the IE9 double viewBox test
+      /* istanbul ignore else */
+      if (!(name in cache)) {
+        const realName = parts.shift().replace(/^(?:|[\S\s]*?\s)(\S+?)=['"]?$/, '$1');
+        cache[name] = attributes[realName] ||
+                      // the following ignore is covered by browsers
+                      // while basicHTML is already case-sensitive
+                      /* istanbul ignore next */
+                      attributes[realName.toLowerCase()];
+        paths.push(__WEBPACK_IMPORTED_MODULE_3__Path_js__["a" /* default */].create('attr', cache[name], realName));
+      }
+      remove.push(attribute);
+    }
+  }
+  const len = remove.length;
+  for (let i = 0; i < len; i++) {
+    node.removeAttributeNode(remove[i]);
+  }
+};
+
+// when a Promise is used as interpolation value
+// its result must be parsed once resolved.
+// This callback is in charge of understanding what to do
+// with a returned value once the promise is resolved.
+const invokeAtDistance = (value, callback) => {
+  callback(value.placeholder);
+  if ('text' in value) {
+    Promise.resolve(value.text).then(String).then(callback);
+  } else if ('any' in value) {
+    Promise.resolve(value.any).then(callback);
+  } else if ('html' in value) {
+    Promise.resolve(value.html).then(asHTML).then(callback);
+  } else {
+    Promise.resolve(__WEBPACK_IMPORTED_MODULE_5__Intent_js__["a" /* default */].invoke(value, callback)).then(callback);
+  }
+};
+
+// quick and dirty ways to check a value type without abusing instanceof
+const isNode_ish = value => 'ELEMENT_NODE' in value;
+const isPromise_ish = value => value != null && 'then' in value;
+
+// in a hyper(node)`<div>${content}</div>` case
+// everything could happen:
+//  * it's a JS primitive, stored as text
+//  * it's null or undefined, the node should be cleaned
+//  * it's a component, update the content by rendering it
+//  * it's a promise, update the content once resolved
+//  * it's an explicit intent, perform the desired operation
+//  * it's an Array, resolve all values if Promises and/or
+//    update the node with the resulting list of content
+const setAnyContent = (node, childNodes) => {
+  const transformer = new __WEBPACK_IMPORTED_MODULE_1__classes_Megatron_js__["a" /* default */](node, childNodes);
+  let fastPath = false;
+  let oldValue;
+  const anyContent = value => {
+    switch (typeof value) {
+      case 'string':
+      case 'number':
+      case 'boolean':
+        if (fastPath) {
+          if (oldValue !== value) {
+            oldValue = value;
+            childNodes[0].textContent = value;
+          }
+        } else {
+          fastPath = true;
+          oldValue = value;
+          transformer.empty(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_6__shared_easy_dom_js__["d" /* text */])(node, value));
+        }
+        break;
+      case 'object':
+      case 'undefined':
+        if (value == null) {
+          fastPath = false;
+          transformer.empty();
+          break;
+        }
+      default:
+        fastPath = false;
+        oldValue = value;
+        if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_7__shared_poorlyfills_js__["e" /* isArray */])(value)) {
+          if (value.length === 0) {
+            transformer.empty();
+          } else {
+            switch (typeof value[0]) {
+              case 'string':
+              case 'number':
+              case 'boolean':
+                anyContent({html: value});
+                break;
+              case 'object':
+                if (__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_7__shared_poorlyfills_js__["e" /* isArray */])(value[0])) {
+                  value = value.concat.apply([], value);
+                }
+                if (isPromise_ish(value[0])) {
+                  Promise.all(value).then(anyContent);
+                  break;
+                }
+              default:
+                transformer.become(value);
+                break;
+            }
+          }
+        } else if (value instanceof __WEBPACK_IMPORTED_MODULE_2__classes_Component_js__["a" /* default */]) {
+          transformer.empty(value);
+        } else if (isNode_ish(value)) {
+          transformer.become(value.nodeType === __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["j" /* DOCUMENT_FRAGMENT_NODE */] ?
+            __WEBPACK_IMPORTED_MODULE_8__shared_utils_js__["c" /* slice */].call(value.childNodes) :
+            [value]);
+        } else if (isPromise_ish(value)) {
+          value.then(anyContent);
+        } else if ('placeholder' in value) {
+          invokeAtDistance(value, anyContent);
+        } else if ('text' in value) {
+          anyContent(String(value.text));
+        } else if ('any' in value) {
+          anyContent(value.any);
+        } else if ('html' in value) {
+          transformer.empty();
+          const fragment = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_8__shared_utils_js__["h" /* createFragment */])(node, [].concat(value.html).join(''));
+          childNodes.push.apply(childNodes, fragment.childNodes);
+          node.parentNode.insertBefore(fragment, node);
+        } else if ('length' in value) {
+          anyContent(__WEBPACK_IMPORTED_MODULE_8__shared_utils_js__["c" /* slice */].call(value));
+        } else {
+          anyContent(__WEBPACK_IMPORTED_MODULE_5__Intent_js__["a" /* default */].invoke(value, anyContent));
+        }
+        break;
+    }
+  };
+  return anyContent;
+};
+
+// there are four kind of attributes, and related behavior:
+//  * events, with a name starting with `on`, to add/remove event listeners
+//  * special, with a name present in their inherited prototype, accessed directly
+//  * regular, accessed through get/setAttribute standard DOM methods
+//  * style, the only regular attribute that also accepts an object as value
+//    so that you can style=${{width: 120}}. In this case, the behavior has been
+//    fully inspired by Preact library and its simplicity.
+const setAttribute = (node, name, original) => {
+  const isSVG = __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["f" /* OWNER_SVG_ELEMENT */] in node;
+  let oldValue;
+  // if the attribute is the style one
+  // handle it differently from others
+  if (name === 'style') {
+    return __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_4__Style_js__["a" /* default */])(node, original, isSVG);
+  }
+  // the name is an event one,
+  // add/remove event listeners accordingly
+  else if (/^on/.test(name)) {
+    let type = name.slice(2);
+    if (type === __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["k" /* CONNECTED */] || type === __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["l" /* DISCONNECTED */]) {
+      if (notObserving) {
+        notObserving = false;
+        observe();
+      }
+      components.add(node);
+    }
+    else if (name.toLowerCase() in node) {
+      type = type.toLowerCase();
+    }
+    return newValue => {
+      if (oldValue !== newValue) {
+        if (oldValue) node.removeEventListener(type, oldValue, false);
+        oldValue = newValue;
+        if (newValue) node.addEventListener(type, newValue, false);
+      }
+    };
+  }
+  // the attribute is special ('value' in input)
+  // and it's not SVG *or* the name is exactly data,
+  // in this case assign the value directly
+  else if (name === 'data' || (!isSVG && name in node)) {
+    return newValue => {
+      if (oldValue !== newValue) {
+        oldValue = newValue;
+        if (node[name] !== newValue) {
+          node[name] = newValue;
+          if (newValue == null) {
+            node.removeAttribute(name);
+          }
+        }
+      }
+    };
+  }
+  // in every other case, use the attribute node as it is
+  // update only the value, set it as node only when/if needed
+  else {
+    let owner = false;
+    const attribute = original.cloneNode(true);
+    return newValue => {
+      if (oldValue !== newValue) {
+        oldValue = newValue;
+        if (attribute.value !== newValue) {
+          if (newValue == null) {
+            if (owner) {
+              owner = false;
+              node.removeAttributeNode(attribute);
+            }
+          } else {
+            attribute.value = newValue;
+            if (!owner) {
+              owner = true;
+              node.setAttributeNode(attribute);
+            }
+          }
+        }
+      }
+    };
+  }
+};
+
+// style or textareas don't accept HTML as content
+// it's pointless to transform or analyze anything
+// different from text there but it's worth checking
+// for possible defined intents.
+const setTextContent = node => {
+  let oldValue;
+  const textContent = value => {
+    if (oldValue !== value) {
+      oldValue = value;
+      if (typeof value === 'object' && value) {
+        if (isPromise_ish(value)) {
+          value.then(textContent);
+        } else if ('placeholder' in value) {
+          invokeAtDistance(value, textContent);
+        } else if ('text' in value) {
+          textContent(String(value.text));
+        } else if ('any' in value) {
+          textContent(value.any);
+        } else if ('html' in value) {
+          textContent([].concat(value.html).join(''));
+        } else if ('length' in value) {
+          textContent(__WEBPACK_IMPORTED_MODULE_8__shared_utils_js__["c" /* slice */].call(value).join(''));
+        } else {
+          textContent(__WEBPACK_IMPORTED_MODULE_5__Intent_js__["a" /* default */].invoke(value, textContent));
+        }
+      } else {
+        node.textContent = value == null ? '' : value;
+      }
+    }
+  };
+  return textContent;
+};
+
+/* harmony default export */ __webpack_exports__["a"] = ({create, find});
+
+// hyper.Components might need connected/disconnected notifications
+// used by components and their onconnect/ondisconnect callbacks.
+// When one of these callbacks is encountered,
+// the document starts being observed.
+let notObserving = true;
+function observe() {
+
+  // when hyper.Component related DOM nodes
+  // are appended or removed from the live tree
+  // these might listen to connected/disconnected events
+  // This utility is in charge of finding all components
+  // involved in the DOM update/change and dispatch
+  // related information to them
+  const dispatchAll = (nodes, type) => {
+    const event = new __WEBPACK_IMPORTED_MODULE_7__shared_poorlyfills_js__["f" /* Event */](type);
+    const length = nodes.length;
+    for (let i = 0; i < length; i++) {
+      let node = nodes[i];
+      if (node.nodeType === __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["b" /* ELEMENT_NODE */]) {
+        dispatchTarget(node, event);
+      }
+    }
+  };
+
+  // the way it's done is via the components weak set
+  // and recursively looking for nested components too
+  const dispatchTarget = (node, event) => {
+    if (components.has(node)) {
+      node.dispatchEvent(event);
+    } else {
+      const children = node.children;
+      const length = children.length;
+      for (let i = 0; i < length; i++) {
+        dispatchTarget(children[i], event);
+      }
+    }
+  }
+
+  // The MutationObserver is the best way to implement that
+  // but there is a fallback to deprecated DOMNodeInserted/Removed
+  // so that even older browsers/engines can help components life-cycle
+  try {
+    (new MutationObserver(records => {
+      const length = records.length;
+      for (let i = 0; i < length; i++) {
+        let record = records[i];
+        dispatchAll(record.removedNodes, __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["l" /* DISCONNECTED */]);
+        dispatchAll(record.addedNodes, __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["k" /* CONNECTED */]);
+      }
+    })).observe(document, {subtree: true, childList: true});
+  } catch(o_O) {
+    document.addEventListener('DOMNodeRemoved', event => {
+      dispatchAll([event.target], __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["l" /* DISCONNECTED */]);
+    }, false);
+    document.addEventListener('DOMNodeInserted', event => {
+      dispatchAll([event.target], __WEBPACK_IMPORTED_MODULE_0__shared_constants_js__["k" /* CONNECTED */]);
+    }, false);
+  }
+}
+
+
+/***/ }),
+/* 35 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__easy_dom_js__ = __webpack_require__(2);
+
+
+const testFragment = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__easy_dom_js__["a" /* fragment */])(document);
+
+// DOM4 node.append(...many)
+const hasAppend = 'append' in testFragment;
+/* harmony export (immutable) */ __webpack_exports__["a"] = hasAppend;
+
+
+// detect old browsers without HTMLTemplateElement content support
+const hasContent = 'content' in __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__easy_dom_js__["b" /* create */])(document, 'template');
+/* harmony export (immutable) */ __webpack_exports__["d"] = hasContent;
+
+
+// IE 11 has problems with cloning templates: it "forgets" empty childNodes
+testFragment.appendChild(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__easy_dom_js__["d" /* text */])(testFragment, 'g'));
+testFragment.appendChild(__webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__easy_dom_js__["d" /* text */])(testFragment, ''));
+const hasDoomedCloneNode = testFragment.cloneNode(true).childNodes.length === 1;
+/* harmony export (immutable) */ __webpack_exports__["b"] = hasDoomedCloneNode;
+
+
+// old browsers need to fallback to cloneNode
+// Custom Elements V0 and V1 will work polyfilled
+// but native implementations need importNode instead
+// (specially Chromium and its old V0 implementation)
+const hasImportNode = 'importNode' in document;
+/* harmony export (immutable) */ __webpack_exports__["c"] = hasImportNode;
+
 
 
 /***/ })
